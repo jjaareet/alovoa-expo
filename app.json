@@ -2,11 +2,12 @@
   "expo": {
     "name": "Alovoa",
     "slug": "alovoa-expo",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "scheme": "alovoa",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
+    "newArchEnabled": true,
     "plugins": [
       [
         "expo-image-picker",
@@ -20,12 +21,12 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 34,
-            "targetSdkVersion": 34,
-            "buildToolsVersion": "34.0.0"
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
           },
           "ios": {
-            "deploymentTarget": "13.4"
+            "deploymentTarget": "15.1"
           }
         }
       ]
@@ -58,10 +59,12 @@
         "LSApplicationQueriesSchemes": [
           "alovoa"
         ],
+        "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "This app uses the location to list other users in close proximity",
         "NSDocumentsFolderUsageDescription": "This app uses the Documents folder to store the requested user data",
         "NSMicrophoneUsageDescription": "This app uses the microphone to record the users voice for other users"
-      }
+      },
+      "buildNumber": "37"
     },
     "android": {
       "icon": "./assets/icon-round.png",
@@ -95,6 +98,18 @@
     "web": {
       "bundler": "metro",
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "TODO"
+      }
+    },
+    "owner": "TODO",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "experiments": {
+      "baseUrl": "/alovoa-expo"
     }
   }
 }
