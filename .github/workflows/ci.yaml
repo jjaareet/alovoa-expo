@@ -18,6 +18,7 @@ jobs:
     - uses: expo/expo-github-action@v8
       with:
         eas-version: latest
+        expo-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
     - run: yarn install
     - run: yarn expo install --check
@@ -35,6 +36,7 @@ jobs:
           android
           dist
           ios
+          node_modules
   build:
     needs: pre-build
     runs-on: macos-latest
@@ -60,10 +62,12 @@ jobs:
     - uses: expo/expo-github-action@v8
       with:
         eas-version: latest
+        expo-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
     - uses: actions/download-artifact@v4
       with:
         name: pre-build
+    # - run: yarn install
     - if: matrix.extension == 'apk'
       run: yarn f-droid
     - run: >-
@@ -79,6 +83,7 @@ jobs:
           alovoa.${{ matrix.extension }}
   post-build:
     needs: build
+    if: needs.build.result == 'success'
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -89,10 +94,12 @@ jobs:
     - uses: expo/expo-github-action@v8
       with:
         eas-version: latest
+        expo-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
     - uses: actions/download-artifact@v4
       with:
         name: pre-build
+    # - run: yarn install
     - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
       with:
