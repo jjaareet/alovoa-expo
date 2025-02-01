@@ -12,11 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
-      with: &setup-node
+      with:
         node-version: latest
         cache: yarn
     - uses: expo/expo-github-action@v8
-      with: &expo-github-action
+      with:
         eas-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
     - run: yarn install
@@ -54,11 +54,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
-      with: *setup-node
+      with:
+        node-version: latest
+        cache: yarn
     - uses: expo/expo-github-action@v8
-      with: *expo-github-action
+      with:
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
     - uses: actions/download-artifact@v4
-      with: &pre-build
+      with:
         name: pre-build
     - if: matrix.extension == 'apk'
       run: yarn f-droid
@@ -79,11 +83,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
-      with: *setup-node
+      with:
+        node-version: latest
+        cache: yarn
     - uses: expo/expo-github-action@v8
-      with: *expo-github-action
+      with:
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
     - uses: actions/download-artifact@v4
-      with: *pre-build
+      with:
+        name: pre-build
     - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
       with:
