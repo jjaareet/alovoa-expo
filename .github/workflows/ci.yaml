@@ -47,10 +47,10 @@ jobs:
           extension: aab
         - platform: android
           profile: preview # builds apk instead of aab
-          output: apk
+          extension: apk
         - platform: ios
           profile: production
-          output: ipa
+          extension: ipa
     steps:
     - uses: actions/download-artifact@v4
       with:
