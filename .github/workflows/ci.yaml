@@ -7,7 +7,7 @@ on:
     branches:
     - master
 jobs:
-  build:
+  prebuild:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -27,15 +27,59 @@ jobs:
     - run: yarn doctor
       env:
         EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false
-    - run: yarn eas build --platform android --local
-    - run: yarn f-droid
-    - run: yarn eas build --platform android --local
-    - run: yarn eas build --platform ios --local
-    - if: false && github.event_name == 'pull_request'
+    - uses: actions/upload-artifact@v4
+      with:
+        name: prebuild
+        path: |
+          .expo
+          android
+          dist
+          ios
+          node_modules
+  build:
+    needs: prebuild
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+        - platform: android
+          profile: production
+          extension: aab
+        - platform: android
+          profile: preview # builds apk instead of aab
+          output: apk
+        - platform: ios
+          profile: production
+          output: ipa
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: prebuild
+    - if: matrix.extension == 'apk'
+      run: yarn f-droid
+    - run: >-
+        yarn eas build --local
+        --output alovoa.${{ matrix.extension }}
+        --platform ${{ matrix.platform }}
+        --profile ${{ matrix.profile }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ matrix.extension }}
+        path: |
+          ${{ matrix.platform }}
+          alovoa.${{ matrix.extension }}
+  eas:
+    needs: build
+    runs-on: macos-latest
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: prebuild
+    - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
       with:
         command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
-    - if: false && github.event_name == 'push'
+    - if: github.event_name == 'push'
       run: |
         if git diff --name-only HEAD | grep -E 'app.json|package.json'; then
           yarn eas build --platform all --non-interactive --no-wait
