@@ -58,7 +58,7 @@ jobs:
     - uses: expo/expo-github-action@v8
       with: *expo-github-action
     - uses: actions/download-artifact@v4
-      with:
+      with: &pre-build
         name: pre-build
     - if: matrix.extension == 'apk'
       run: yarn f-droid
@@ -83,8 +83,7 @@ jobs:
     - uses: expo/expo-github-action@v8
       with: *expo-github-action
     - uses: actions/download-artifact@v4
-      with:
-        name: pre-build
+      with: *pre-build
     - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
       with:
