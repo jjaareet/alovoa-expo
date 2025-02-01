@@ -25,15 +25,17 @@ jobs:
       env:
         EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false
     - run: yarn tsc
-    - run: yarn expo prebuild
     - run: yarn expo export
+    - uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist
+    - run: yarn expo prebuild
     - uses: actions/upload-artifact@v4
       with:
         name: prebuild
         path: |
-          .expo
           android
-          dist
           ios
   build:
     needs: prebuild
@@ -101,19 +103,16 @@ jobs:
         token: ${{ secrets.EXPO_TOKEN }}
     - uses: actions/download-artifact@v4
       with:
-        name: prebuild
-    - uses: actions/download-artifact@v4
-      with:
         name: android
     - uses: actions/download-artifact@v4
       with:
         name: ios
     - uses: actions/download-artifact@v4
       with:
-        name: apk
+        name: aab
     - uses: actions/download-artifact@v4
       with:
-        name: aab
+        name: apk
     - uses: actions/download-artifact@v4
       with:
         name: ipa
