@@ -21,13 +21,12 @@ jobs:
         expo-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
     - run: yarn install
-    - run: yarn expo install --check
-    - run: yarn tsc
-    - run: yarn expo prebuild
-    - run: yarn expo export
     - run: yarn doctor
       env:
         EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false
+    - run: yarn tsc
+    - run: yarn expo prebuild
+    - run: yarn expo export
     - uses: actions/upload-artifact@v4
       with:
         name: pre-build
@@ -67,7 +66,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: pre-build
-    # - run: yarn install
+    - run: yarn install
     - if: matrix.extension == 'apk'
       run: yarn f-droid
     - run: >-
@@ -99,7 +98,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: pre-build
-    # - run: yarn install
+    - run: yarn install
     - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
       with:
