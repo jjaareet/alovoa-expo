@@ -63,13 +63,13 @@ jobs:
       run: yarn f-droid
     - run: >-
         yarn eas build --local --non-interactive
-        --output alovoa.${{ matrix.extension }}
+        --output Alovoa.${{ matrix.extension }}
         --platform ${{ matrix.platform }}
         --profile ${{ matrix.profile }}
     - uses: actions/upload-artifact@v4
       with:
-        name: alovoa.${{ matrix.extension }}
-        path: alovoa.${{ matrix.extension }}
+        name: Alovoa.${{ matrix.extension }}
+        path: Alovoa.${{ matrix.extension }}
   postbuild:
     needs: build
     if: needs.build.result == 'success'
@@ -87,13 +87,13 @@ jobs:
         token: ${{ secrets.EXPO_TOKEN }}
     - uses: actions/download-artifact@v4
       with:
-        name: alovoa.aab
+        name: Alovoa.aab
     - uses: actions/download-artifact@v4
       with:
-        name: alovoa.apk
+        name: Alovoa.apk
     - uses: actions/download-artifact@v4
       with:
-        name: alovoa.ipa
+        name: Alovoa.ipa
     - run: yarn install
     - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
