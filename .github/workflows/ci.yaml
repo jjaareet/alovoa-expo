@@ -42,13 +42,16 @@ jobs:
     strategy:
       matrix:
         include:
-        - platform: android
+        - artifact: android
+          platform: android
           profile: production
           extension: aab
-        - platform: android
+        - artifact: f-droid
+          platform: android
           profile: preview # builds apk instead of aab
           extension: apk
-        - platform: ios
+        - artifact: ios
+          platform: ios
           profile: production
           extension: ipa
     steps:
@@ -75,10 +78,12 @@ jobs:
         --profile ${{ matrix.profile }}
     - uses: actions/upload-artifact@v4
       with:
-        name: build-${{ matrix.extension }}
-        path: |
-          ${{ matrix.platform }}
-          alovoa.${{ matrix.extension }}
+        name: ${{ matrix.extension }}
+        path: alovoa.${{ matrix.extension }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact }}
+        path: ${{ matrix.platform }}
   postbuild:
     needs: build
     if: needs.build.result == 'success'
@@ -99,13 +104,19 @@ jobs:
         name: prebuild
     - uses: actions/download-artifact@v4
       with:
-        name: build-apk
+        name: android
     - uses: actions/download-artifact@v4
       with:
-        name: build-aab
+        name: ios
     - uses: actions/download-artifact@v4
       with:
-        name: build-ipa
+        name: apk
+    - uses: actions/download-artifact@v4
+      with:
+        name: aab
+    - uses: actions/download-artifact@v4
+      with:
+        name: ipa
     - run: yarn install
     - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
