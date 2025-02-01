@@ -92,7 +92,8 @@
         "exclude": [
           "form-data",
           "lodash",
-          "mime"
+          "mime",
+          "serve"
         ]
       }
     }
