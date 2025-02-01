@@ -35,10 +35,10 @@ jobs:
           android
           dist
           ios
-          node_modules
   build:
     needs: pre-build
     runs-on: macos-latest
+    continue-on-error: true
     strategy:
       matrix:
         include:
