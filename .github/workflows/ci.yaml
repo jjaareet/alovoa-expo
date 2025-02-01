@@ -7,7 +7,7 @@ on:
     branches:
     - master
 jobs:
-  prebuild:
+  pre-build:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
         EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false
     - uses: actions/upload-artifact@v4
       with:
-        name: prebuild
+        name: pre-build
         path: |
           .expo
           android
@@ -37,7 +37,7 @@ jobs:
           ios
           node_modules
   build:
-    needs: prebuild
+    needs: pre-build
     runs-on: macos-latest
     strategy:
       matrix:
@@ -52,9 +52,14 @@ jobs:
           profile: production
           extension: ipa
     steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: latest
+        cache: yarn
     - uses: actions/download-artifact@v4
       with:
-        name: prebuild
+        name: pre-build
     - if: matrix.extension == 'apk'
       run: yarn f-droid
     - run: >-
@@ -68,13 +73,18 @@ jobs:
         path: |
           ${{ matrix.platform }}
           alovoa.${{ matrix.extension }}
-  eas:
+  post-build:
     needs: build
     runs-on: macos-latest
     steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: latest
+        cache: yarn
     - uses: actions/download-artifact@v4
       with:
-        name: prebuild
+        name: pre-build
     - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
       with:
