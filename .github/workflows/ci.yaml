@@ -23,13 +23,15 @@ jobs:
     - run: yarn install
     - run: yarn doctor
       env:
-        EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false # todo: `yarn doctor` - look into issues that were found when validating dependencies against React Native Directory
+        EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false # todo: `yarn doctor` - look into issues that were found when validating dependencies against React Native Directory (@likashefqet/react-native-image-zoom, etc...)
     - run: yarn tsc
     - run: yarn expo prebuild
     - run: yarn expo export
     - uses: actions/upload-pages-artifact@v3
       with:
         path: dist
+    - uses: actions/configure-pages@v5 # todo: remove... testing
+    - uses: actions/deploy-pages@v4 # todo: remove... testing
   build:
     needs: prebuild
     runs-on: macos-latest
