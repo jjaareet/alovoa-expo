@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 # a script to make updating package.json easier and more consistent
 

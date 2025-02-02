@@ -103,7 +103,7 @@ jobs:
       with:
         name: Alovoa.ipa
     - run: yarn install
-    - if: false && github.event_name == 'pull_request' # todo: temp for testing
+    - if: false && github.event_name == 'pull_request' # todo: temp for testing. Error: Resource not accessible by integration expo-github action
       uses: expo/expo-github-action/preview@v8
       with:
         command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
