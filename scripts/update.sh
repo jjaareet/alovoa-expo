@@ -10,7 +10,7 @@ yarn upgrade-interactive --latest
 yarn expo install --fix
 
 # use exact version (remove ~ & ^)
-sed -i '' 's/\("\)[~^]/\1/g' package.json
+perl -pi -e 's/(")[~^]/$1/g' package.json
 
 # make sure yarn.lock is up to date
 yarn install
