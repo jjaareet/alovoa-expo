@@ -6,15 +6,8 @@ on:
   pull_request:
     branches:
     - master
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 jobs:
   prebuild:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -32,18 +25,12 @@ jobs:
       env:
         EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false # todo: `yarn doctor` - look into issues that were found when validating dependencies against React Native Directory (@likashefqet/react-native-image-zoom, etc...)
     - run: yarn tsc
-    # - run: yarn expo prebuild # temp speed up
+    - run: yarn expo prebuild
     - run: yarn expo export
-    - uses: actions/configure-pages@v5 # todo: remove... testing
-      with:
-        enablement: true
     - uses: actions/upload-pages-artifact@v3
       with:
         name: dist
         path: dist
-    - uses: actions/deploy-pages@v4 # todo: remove... testing
-      with:
-        artifact_name: dist
   build:
     needs: prebuild
     runs-on: macos-latest
@@ -83,16 +70,25 @@ jobs:
       with:
         name: Alovoa.${{ matrix.extension }}
         path: Alovoa.${{ matrix.extension }}
-  postbuild:
+  verify-artifacts:
     needs: build
-    if: needs.build.result == 'success'
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: Alovoa.aab
+    - uses: actions/download-artifact@v4
+      with:
+        name: Alovoa.apk
+    - uses: actions/download-artifact@v4
+      with:
+        name: Alovoa.ipa
+    - uses: actions/download-artifact@v4
+      with:
+        name: dist
+  eas:
+    needs: verify-artifacts
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -104,27 +100,13 @@ jobs:
         eas-version: latest
         expo-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
-    - uses: actions/download-artifact@v4
-      with:
-        name: Alovoa.aab
-    - uses: actions/download-artifact@v4
-      with:
-        name: Alovoa.apk
-    - uses: actions/download-artifact@v4
-      with:
-        name: Alovoa.ipa
     - run: yarn install
-    - if: false && github.event_name == 'pull_request' # todo: temp for testing. Error: Resource not accessible by integration expo-github action
+    - if: github.event_name == 'pull_request'
       uses: expo/expo-github-action/preview@v8
       with:
         command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
         qr-target: expo-go
-    - uses: actions/configure-pages@v5
-    - uses: actions/deploy-pages@v4
-      # todo: look into prod and staging branches to see how thats currently working
-    - if: false && github.event_name == 'push' # todo: reduce asset count to utilize eas deploy. maybe deploy static assets to github
-      run: yarn eas deploy --non-interactive # Failed to create deployment. Your deployment contains over 134 assets, which exceeds the maximum. On the free tier, your deployments may only upload 100 assets. To lift this restriction, upgrade your account to a paid plan.
-    - if: github.event_name == 'push'
+    - if: github.ref_name == github.event.repository.default_branch
       run: |
         if git diff --name-only HEAD | grep -E 'app.json|package.json'; then
           yarn eas build --platform all --non-interactive --no-wait
@@ -133,3 +115,20 @@ jobs:
         else
           yarn eas update --auto --non-interactive
         fi
+  deploy-github-pages:
+    needs: verify-artifacts
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - uses: actions/configure-pages@v5
+    - id: deployment
+      uses: actions/deploy-pages@v4
+      with:
+        artifact_name: dist
