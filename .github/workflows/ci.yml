@@ -26,9 +26,10 @@ jobs:
       with:
         name: dist
         path: dist
+        retention-days: 0
   build:
     needs: prebuild
-    runs-on: macos-latest
+    runs-on: ${{ matrix.run-on }}
     name: build-${{ matrix.extension }}
     continue-on-error: true
     strategy:
@@ -37,12 +38,15 @@ jobs:
         - platform: android
           profile: production
           extension: aab
+          run-on: ubuntu-latest
         - platform: android
           profile: preview # builds apk instead of aab
           extension: apk
+          run-on: ubuntu-latest
         - platform: ios
           profile: production
           extension: ipa
+          run-on: macos-latest
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -82,7 +86,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: dist
-    - run: find dist && file Alovoa.*
+    - run: find artifact && file Alovoa.*
   expo-application-services:
     needs: verify-artifacts
     runs-on: ubuntu-latest
