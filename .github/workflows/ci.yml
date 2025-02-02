@@ -6,12 +6,12 @@ on:
   pull_request:
     branches:
     - master
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
   prebuild:
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -32,15 +32,15 @@ jobs:
       env:
         EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false # todo: `yarn doctor` - look into issues that were found when validating dependencies against React Native Directory (@likashefqet/react-native-image-zoom, etc...)
     - run: yarn tsc
-    - run: yarn expo prebuild
+    # - run: yarn expo prebuild # temp speed up
     - run: yarn expo export
+    - uses: actions/configure-pages@v5 # todo: remove... testing
+      with:
+        enablement: true
     - uses: actions/upload-pages-artifact@v3
       with:
         name: dist
         path: dist
-    - uses: actions/configure-pages@v5 # todo: remove... testing
-      with:
-        enablement: true
     - uses: actions/deploy-pages@v4 # todo: remove... testing
   build:
     needs: prebuild
