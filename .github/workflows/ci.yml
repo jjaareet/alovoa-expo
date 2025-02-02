@@ -86,7 +86,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: dist
-    - run: find artifact && file Alovoa.*
+    - run: tar -xvf artifact.tar && find artifact && file Alovoa.* # upload-pages-artifact renames dist to artifact
   expo-application-services:
     needs: verify-artifacts
     runs-on: ubuntu-latest
