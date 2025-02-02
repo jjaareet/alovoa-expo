@@ -95,14 +95,14 @@ jobs:
       with:
         name: Alovoa.ipa
     - run: yarn install
-    - if: github.event_name == 'pull_request'
+    - if: github.event_name == 'pull_request' && secrets.EXPO_TOKEN # check for token to prevent forks from failing
       uses: expo/expo-github-action/preview@v8
       with:
         command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
         qr-target: expo-go
-    # - if: github.event_name == 'push' # todo: reduce asset count to utilize eas deploy
-    #   run: yarn eas deploy --non-interactive # Failed to create deployment. Your deployment contains over 134 assets, which exceeds the maximum. On the free tier, your deployments may only upload 100 assets. To lift this restriction, upgrade your account to a paid plan.
-    - if: github.event_name == 'push'
+    - if: false && github.event_name == 'push' && secrets.EXPO_TOKEN # todo: reduce asset count to utilize eas deploy
+      run: yarn eas deploy --non-interactive # Failed to create deployment. Your deployment contains over 134 assets, which exceeds the maximum. On the free tier, your deployments may only upload 100 assets. To lift this restriction, upgrade your account to a paid plan.
+    - if: github.event_name == 'push' && secrets.EXPO_TOKEN
       run: |
         if git diff --name-only HEAD | grep -E 'app.json|package.json'; then
           yarn eas build --platform all --non-interactive --no-wait
