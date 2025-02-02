@@ -15,11 +15,6 @@ jobs:
       with:
         node-version: latest
         cache: yarn
-    - uses: expo/expo-github-action@v8
-      with:
-        eas-version: latest
-        expo-version: latest
-        token: ${{ secrets.EXPO_TOKEN }}
     - run: yarn install
     - run: yarn doctor
       env:
