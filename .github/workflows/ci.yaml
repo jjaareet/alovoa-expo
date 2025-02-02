@@ -32,7 +32,7 @@ jobs:
         path: dist
   build:
     needs: prebuild
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: macos-latest
     continue-on-error: true
     strategy:
       matrix:
@@ -40,15 +40,12 @@ jobs:
         - platform: android
           profile: production
           extension: aab
-          runs-on: ubuntu-latest 
         - platform: android
           profile: preview # builds apk instead of aab
           extension: apk
-          runs-on: ubuntu-latest
         - platform: ios
           profile: production
           extension: ipa
-          runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
