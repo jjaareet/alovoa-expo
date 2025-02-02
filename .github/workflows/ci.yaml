@@ -23,13 +23,12 @@ jobs:
     - run: yarn install
     - run: yarn doctor
       env:
-        EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false
+        EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false # todo: `yarn doctor` - look into issues that were found when validating dependencies against React Native Directory
     - run: yarn tsc
     - run: yarn expo prebuild
     - run: yarn expo export
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-pages-artifact@v3
       with:
-        name: dist
         path: dist
   build:
     needs: prebuild
@@ -74,6 +73,12 @@ jobs:
     needs: build
     if: needs.build.result == 'success'
     runs-on: macos-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -100,7 +105,10 @@ jobs:
       with:
         command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
         qr-target: expo-go
-    - if: false && github.event_name == 'push' # todo: reduce asset count to utilize eas deploy
+    - uses: actions/configure-pages@v5
+    - uses: actions/deploy-pages@v4
+      # todo: look into prod and staging branches to see how thats currently working
+    - if: false && github.event_name == 'push' # todo: reduce asset count to utilize eas deploy. maybe deploy static assets to github
       run: yarn eas deploy --non-interactive # Failed to create deployment. Your deployment contains over 134 assets, which exceeds the maximum. On the free tier, your deployments may only upload 100 assets. To lift this restriction, upgrade your account to a paid plan.
     - if: github.event_name == 'push'
       run: |
