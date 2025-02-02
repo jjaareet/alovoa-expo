@@ -9,6 +9,7 @@ on:
 jobs:
   prebuild:
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
