@@ -34,6 +34,7 @@ jobs:
   build:
     needs: prebuild
     runs-on: macos-latest
+    name: build-${{ matrix.extension }}
     continue-on-error: true
     strategy:
       matrix:
