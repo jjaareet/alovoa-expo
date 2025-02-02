@@ -31,6 +31,8 @@ jobs:
       with:
         path: dist
     - uses: actions/configure-pages@v5 # todo: remove... testing
+      with:
+        enablement: true
     - uses: actions/deploy-pages@v4 # todo: remove... testing
   build:
     needs: prebuild
