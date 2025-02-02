@@ -8,6 +8,12 @@ on:
     - master
 jobs:
   prebuild:
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -29,6 +35,7 @@ jobs:
     - run: yarn expo export
     - uses: actions/upload-pages-artifact@v3
       with:
+        name: dist
         path: dist
     - uses: actions/configure-pages@v5 # todo: remove... testing
       with:
