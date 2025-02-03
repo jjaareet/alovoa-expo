@@ -12,5 +12,5 @@ perl -pi -e 's/FLAG_FDROID = false/FLAG_FDROID = true/' Global.tsx
 # apply node_module patches (`rm -rf node_modules && yarn` to reverse)
 yarn patch-package --patch-dir scripts/patches
 
-# remove signing config
-perl -pi -e '/signingConfig /d' android/app/build.gradle
+# remove signing config block
+perl -0777 -pi -e 's/\s+signingConfigs {[^}]+?}[^}]+?}//g' android/app/build.gradle
