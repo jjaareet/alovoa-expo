@@ -4,7 +4,7 @@ set -ex
 # a script to make updating package.json easier and more consistent
 
 # check what packages you want to upgrade
-yarn upgrade-interactive --latest
+yarn upgrade-interactive --latest --exact
 
 # downgrade any that are known to be too high
 yarn expo install --fix

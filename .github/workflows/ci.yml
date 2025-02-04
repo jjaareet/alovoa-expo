@@ -91,7 +91,7 @@ jobs:
         mkdir dist &&
         tar -xvf artifact.tar -C dist &&
         file Alovoa.* &&
-        ls -la
+        ls -lah
   expo-application-services:
     needs: verify-artifacts
     runs-on: ubuntu-latest
