@@ -6,6 +6,6 @@ set -ex
 # create android and ios directories
 yarn expo prebuild
 
-# dark splash
+# dark splash - does not work with `eas build`
 cp ./scripts/xml/colors.xml \
   ./android/app/src/main/res/values-night/colors.xml
