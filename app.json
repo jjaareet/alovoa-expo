@@ -64,7 +64,7 @@
         "NSDocumentsFolderUsageDescription": "This app uses the Documents folder to store the requested user data",
         "NSMicrophoneUsageDescription": "This app uses the microphone to record the users voice for other users"
       },
-      "buildNumber": 37
+      "buildNumber": "37"
     },
     "android": {
       "icon": "./assets/icon-round.png",
