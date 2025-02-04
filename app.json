@@ -101,10 +101,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "TODO"
+        "projectId": "e1ad49f3-eab0-4365-ae38-8a2391e2af67"
       }
     },
-    "owner": "TODO",
+    "owner": "jarrettconfrey",
     "runtimeVersion": {
       "policy": "appVersion"
     },
