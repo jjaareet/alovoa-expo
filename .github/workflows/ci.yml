@@ -18,7 +18,8 @@ jobs:
     - run: yarn install
     - run: yarn doctor
       env:
-        EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false # todo: `yarn doctor` - look into issues that were found when validating dependencies against React Native Directory (@likashefqet/react-native-image-zoom, etc...)
+        # todo: `yarn doctor` - look into warnings that were found when validating dependencies against React Native Directory (@likashefqet/react-native-image-zoom, etc...)
+        EXPO_DOCTOR_ENABLE_DIRECTORY_CHECK: false
     - run: yarn tsc
     - run: yarn expo prebuild
     - run: yarn expo export
