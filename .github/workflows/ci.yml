@@ -86,7 +86,11 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: dist
-    - run: mkdir dist && tar -xvf artifact.tar -C dist && file Alovoa.* # upload-pages-artifact archives dist to artifact.tar
+    - run: >- # upload-pages-artifact archives dist to artifact.tar
+        mkdir dist &&
+        tar -xvf artifact.tar -C dist &&
+        file Alovoa.* &&
+        ls -la
   expo-application-services:
     needs: verify-artifacts
     runs-on: ubuntu-latest
