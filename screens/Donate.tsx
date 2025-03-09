@@ -1,25 +1,34 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   TouchableOpacity,
   FlatList,
   RefreshControl,
-  useWindowDimensions
-} from "react-native";
+  useWindowDimensions,
+} from 'react-native';
 
-import { Text, Button, Menu, ActivityIndicator, MaterialBottomTabScreenProps } from "react-native-paper";
-import { CardItemDonate } from "../components";
-import styles, { STATUS_BAR_HEIGHT } from "../assets/styles";
-import * as I18N from "../i18n";
-import * as Global from "../Global";
-import * as URL from "../URL";
-import { DonationDtoListModel, DonationDto, RootStackParamList } from "../types";
+import {
+  Text,
+  Button,
+  Menu,
+  ActivityIndicator,
+  MaterialBottomTabScreenProps,
+} from 'react-native-paper';
+import { CardItemDonate } from '../components';
+import styles, { STATUS_BAR_HEIGHT } from '../assets/styles';
+import * as I18N from '../i18n';
+import * as Global from '../Global';
+import * as URL from '../URL';
+import {
+  DonationDtoListModel,
+  DonationDto,
+  RootStackParamList,
+} from '../types';
 import * as Linking from 'expo-linking';
-import VerticalView from "../components/VerticalView";
+import VerticalView from '../components/VerticalView';
 
-type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Donate'>
-const Donate = ({route: _r, navigation: _n}: Props) => {
-
+type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Donate'>;
+const Donate = ({ route: _r, navigation: _n }: Props) => {
   const FILTER_RECENT = 1;
   const FILTER_AMOUNT = 2;
   const topBarHeight = 62;
@@ -39,7 +48,9 @@ const Donate = ({route: _r, navigation: _n}: Props) => {
 
   async function load() {
     setLoading(true);
-    let response = await Global.Fetch(Global.format(URL.API_DONATE_RECENT, filter));
+    let response = await Global.Fetch(
+      Global.format(URL.API_DONATE_RECENT, filter),
+    );
     let data: DonationDtoListModel = response.data;
     setResults(data.list);
     setLoading(false);
@@ -62,27 +73,66 @@ const Donate = ({route: _r, navigation: _n}: Props) => {
 
   return (
     <View style={{ flex: 1, height: height }}>
-      {loading &&
-        <View style={{ height: height, width: width, zIndex: 1, justifyContent: 'center', alignItems: 'center', position: "absolute" }} >
-          <ActivityIndicator animating={loading} size="large" />
+      {loading && (
+        <View
+          style={{
+            height: height,
+            width: width,
+            zIndex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+          }}
+        >
+          <ActivityIndicator
+            animating={loading}
+            size="large"
+          />
         </View>
-      }
+      )}
       <View style={{ paddingTop: STATUS_BAR_HEIGHT }}></View>
-      <View style={[styles.top, { paddingBottom: 8, justifyContent: 'flex-end' }]}>
+      <View
+        style={[styles.top, { paddingBottom: 8, justifyContent: 'flex-end' }]}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {Global.FLAG_ENABLE_DONATION &&
-            <Button icon="cash-multiple" mode="contained-tonal" onPress={() => Linking.openURL(URL.DONATE_LIST)} style={{ marginRight: 4 }}>
+          {Global.FLAG_ENABLE_DONATION && (
+            <Button
+              icon="cash-multiple"
+              mode="contained-tonal"
+              onPress={() => Linking.openURL(URL.DONATE_LIST)}
+              style={{ marginRight: 4 }}
+            >
               <Text>{i18n.t('navigation.donate')}</Text>
-            </Button>}
+            </Button>
+          )}
           <View>
             <Menu
               visible={menuSortVisible}
               onDismiss={hideMenuSort}
-              anchor={<Button icon="sort" mode="contained-tonal" onPress={() => showMenuSort()}>
-                <Text>{i18n.t('sort')}</Text>
-              </Button>}>
-              <Menu.Item leadingIcon="sort-clock-ascending-outline" onPress={() => { updateFilter(FILTER_RECENT) }} title={i18n.t('donate.filter.recent')} />
-              <Menu.Item leadingIcon="sort-numeric-descending-variant" onPress={() => { updateFilter(FILTER_AMOUNT) }} title={i18n.t('donate.filter.amount')} />
+              anchor={
+                <Button
+                  icon="sort"
+                  mode="contained-tonal"
+                  onPress={() => showMenuSort()}
+                >
+                  <Text>{i18n.t('sort')}</Text>
+                </Button>
+              }
+            >
+              <Menu.Item
+                leadingIcon="sort-clock-ascending-outline"
+                onPress={() => {
+                  updateFilter(FILTER_RECENT);
+                }}
+                title={i18n.t('donate.filter.recent')}
+              />
+              <Menu.Item
+                leadingIcon="sort-numeric-descending-variant"
+                onPress={() => {
+                  updateFilter(FILTER_AMOUNT);
+                }}
+                title={i18n.t('donate.filter.amount')}
+              />
             </Menu>
           </View>
         </View>
@@ -90,8 +140,13 @@ const Donate = ({route: _r, navigation: _n}: Props) => {
       <VerticalView style={{ paddingBottom: topBarHeight + 24 }}>
         <FlatList
           scrollEnabled={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}
-          columnWrapperStyle={{ flex: 1, justifyContent: "space-around" }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={load}
+            />
+          }
+          columnWrapperStyle={{ flex: 1, justifyContent: 'space-around' }}
           numColumns={2}
           data={results}
           keyExtractor={(item, index) => index.toString()}
@@ -106,7 +161,7 @@ const Donate = ({route: _r, navigation: _n}: Props) => {
         />
       </VerticalView>
     </View>
-  )
+  );
 };
 
 export default Donate;

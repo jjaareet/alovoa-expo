@@ -1,46 +1,55 @@
-import React from "react";
+import React from 'react';
+import { View, useWindowDimensions } from 'react-native';
+import styles from '../../assets/styles';
 import {
-  View,
-  useWindowDimensions
-} from "react-native";
-import styles from "../../assets/styles";
-import { RootStackParamList, SettingsEmailEnum, SettingsEmailNameMap, UnitsEnum, UnitsNameMap, YourProfileResource } from "../../types";
-import * as I18N from "../../i18n";
-import * as Global from "../../Global";
-import * as URL from "../../URL";
-import SelectModal from "../../components/SelectModal";
-import VerticalView from "../../components/VerticalView";
-import ColorModal from "../../components/ColorModal";
-import { MaterialBottomTabScreenProps } from "react-native-paper";
-
+  RootStackParamList,
+  SettingsEmailEnum,
+  SettingsEmailNameMap,
+  UnitsEnum,
+  UnitsNameMap,
+  YourProfileResource,
+} from '../../types';
+import * as I18N from '../../i18n';
+import * as Global from '../../Global';
+import * as URL from '../../URL';
+import SelectModal from '../../components/SelectModal';
+import VerticalView from '../../components/VerticalView';
+import ColorModal from '../../components/ColorModal';
+import { MaterialBottomTabScreenProps } from 'react-native-paper';
 
 const i18n = I18N.getI18n();
 
-type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Profile.Settings'>
+type Props = MaterialBottomTabScreenProps<
+  RootStackParamList,
+  'Profile.Settings'
+>;
 const Settings = ({ route }: Props) => {
-
   var data: YourProfileResource = route.params.data;
 
   const { height } = useWindowDimensions();
   const [units, setUnits] = React.useState(UnitsEnum.SI);
-  const [emailSettings, setEmailSettings] = React.useState<Map<number, boolean>>(new Map());
+  const [emailSettings, setEmailSettings] = React.useState<
+    Map<number, boolean>
+  >(new Map());
 
   React.useEffect(() => {
     load();
   }, []);
 
   async function load() {
-    let unitEnum: UnitsEnum = Number(await Global.GetStorage(Global.STORAGE_SETTINGS_UNIT));
+    let unitEnum: UnitsEnum = Number(
+      await Global.GetStorage(Global.STORAGE_SETTINGS_UNIT),
+    );
     if (unitEnum) {
       setUnits(unitEnum);
     }
     let emailSettings = new Map<number, boolean>();
-    if(data.user.userSettings.emailLike) {
+    if (data.user.userSettings.emailLike) {
       emailSettings.set(SettingsEmailEnum.LIKE, true);
     } else {
       emailSettings.set(SettingsEmailEnum.LIKE, false);
     }
-    if(data.user.userSettings.emailChat) {
+    if (data.user.userSettings.emailChat) {
       emailSettings.set(SettingsEmailEnum.CHAT, true);
     } else {
       emailSettings.set(SettingsEmailEnum.CHAT, false);
@@ -50,7 +59,10 @@ const Settings = ({ route }: Props) => {
 
   async function updateUnits(num: number) {
     setUnits(num);
-    await Global.Fetch(Global.format(URL.USER_UPDATE_UNITS, String(num)), 'post');
+    await Global.Fetch(
+      Global.format(URL.USER_UPDATE_UNITS, String(num)),
+      'post',
+    );
     await Global.SetStorage(Global.STORAGE_SETTINGS_UNIT, String(num));
   }
 
@@ -69,34 +81,55 @@ const Settings = ({ route }: Props) => {
 
   return (
     <View style={{ height: height, width: '100%' }}>
-      <VerticalView onRefresh={load} style={{ padding: 0 }}>
+      <VerticalView
+        onRefresh={load}
+        style={{ padding: 0 }}
+      >
         <View style={[styles.containerProfileItem, { marginTop: 32 }]}>
           <View style={{ marginTop: 12 }}>
             <ColorModal
-              title={i18n.t('profile.settings.colors.title')}>
-            </ColorModal>
+              title={i18n.t('profile.settings.colors.title')}
+            ></ColorModal>
           </View>
           <View style={{ marginTop: 12 }}>
-            <SelectModal disabled={false} multi={false} minItems={1} title={i18n.t('profile.units.title')}
+            <SelectModal
+              disabled={false}
+              multi={false}
+              minItems={1}
+              title={i18n.t('profile.units.title')}
               data={[
                 [UnitsEnum.SI, UnitsNameMap.get(UnitsEnum.SI)],
                 [UnitsEnum.IMPERIAL, UnitsNameMap.get(UnitsEnum.IMPERIAL)],
               ]}
-              selected={[units]} onValueChanged={function (id: number, checked: boolean): void {
+              selected={[units]}
+              onValueChanged={function (id: number, checked: boolean): void {
                 if (checked) {
                   updateUnits(id);
                 }
-              }}></SelectModal>
+              }}
+            ></SelectModal>
           </View>
           <View style={{ marginTop: 12 }}>
-            <SelectModal disabled={false} multi={true} minItems={0} title={i18n.t('profile.settings.notification')}
+            <SelectModal
+              disabled={false}
+              multi={true}
+              minItems={0}
+              title={i18n.t('profile.settings.notification')}
               data={[
-                [SettingsEmailEnum.LIKE, SettingsEmailNameMap.get(SettingsEmailEnum.LIKE)],
-                [SettingsEmailEnum.CHAT, SettingsEmailNameMap.get(SettingsEmailEnum.CHAT)],
+                [
+                  SettingsEmailEnum.LIKE,
+                  SettingsEmailNameMap.get(SettingsEmailEnum.LIKE),
+                ],
+                [
+                  SettingsEmailEnum.CHAT,
+                  SettingsEmailNameMap.get(SettingsEmailEnum.CHAT),
+                ],
               ]}
-              selected={[...emailSettings.entries()].filter((item) => item[1]).map((item) => item[0])}
-              onValueChanged={updateEmailSettings}>
-            </SelectModal>
+              selected={[...emailSettings.entries()]
+                .filter(item => item[1])
+                .map(item => item[0])}
+              onValueChanged={updateEmailSettings}
+            ></SelectModal>
           </View>
         </View>
       </VerticalView>

@@ -1,37 +1,55 @@
-import React from "react";
-import { InterestModalT, UserInterest, UserInterestAutocomplete, UserInterestDto } from "../types";
+import React from 'react';
+import {
+  InterestModalT,
+  UserInterest,
+  UserInterestAutocomplete,
+  UserInterestDto,
+} from '../types';
 import { Text, Button, Searchbar } from 'react-native-paper';
-import { Keyboard, View, useWindowDimensions } from "react-native";
-import * as Global from "../Global";
-import * as URL from "../URL";
-import * as I18N from "../i18n";
-import { debounce } from "lodash";
-import Alert from "./Alert";
-import { ScrollView } from "react-native-gesture-handler";
+import { Keyboard, View, useWindowDimensions } from 'react-native';
+import * as Global from '../Global';
+import * as URL from '../URL';
+import * as I18N from '../i18n';
+import { debounce } from 'lodash';
+import Alert from './Alert';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const InterestModal = ({ user, data, updateButtonText, setInterestsExternal }: InterestModalT) => {
-
+const InterestModal = ({
+  user,
+  data,
+  updateButtonText,
+  setInterestsExternal,
+}: InterestModalT) => {
   const i18n = I18N.getI18n();
   const { height } = useWindowDimensions();
 
   const [interests, setInterests] = React.useState(data);
   const [alertVisible, setAlertVisible] = React.useState(false);
-  const [interest, setInterest] = React.useState("");
-  const [interestDebounce, setInterestDebounce] = React.useState("");
+  const [interest, setInterest] = React.useState('');
+  const [interestDebounce, setInterestDebounce] = React.useState('');
   // const [loading, setLoading] = React.useState(false);
-  const [suggestionsList, setSuggestionsList] = React.useState(Array<UserInterestDto>);
-  const [interestToBeDeleted, setInterestToBeDeleted] = React.useState<UserInterest | null>();
+  const [suggestionsList, setSuggestionsList] = React.useState(
+    Array<UserInterestDto>,
+  );
+  const [interestToBeDeleted, setInterestToBeDeleted] =
+    React.useState<UserInterest | null>();
 
   const alertButtons = [
     {
       text: i18n.t('cancel'),
-      onPress: () => { setAlertVisible(false); },
+      onPress: () => {
+        setAlertVisible(false);
+      },
     },
     {
       text: i18n.t('ok'),
       onPress: async () => {
         if (interestToBeDeleted) {
-          if (user) await Global.Fetch(Global.format(URL.USER_REMOVE_INTEREST, interestToBeDeleted.text), 'post');
+          if (user)
+            await Global.Fetch(
+              Global.format(URL.USER_REMOVE_INTEREST, interestToBeDeleted.text),
+              'post',
+            );
           let interestsCopy = [...interests];
           interestsCopy.forEach((item, index) => {
             if (item === interestToBeDeleted) interestsCopy.splice(index, 1);
@@ -42,12 +60,15 @@ const InterestModal = ({ user, data, updateButtonText, setInterestsExternal }: I
           setAlertVisible(false);
           if (user) user.interests = interestsCopy;
         }
-      }
-    }
-  ]
+      },
+    },
+  ];
 
   const interestRef = React.useRef(interestDebounce);
-  const debounceInterestHandler = React.useCallback(debounce(getSuggestions, 700), []);
+  const debounceInterestHandler = React.useCallback(
+    debounce(getSuggestions, 700),
+    [],
+  );
 
   React.useEffect(() => {
     interestRef.current = interestDebounce;
@@ -82,30 +103,39 @@ const InterestModal = ({ user, data, updateButtonText, setInterestsExternal }: I
     let q = interestRef.current;
     let filterToken = cleanInterest(q);
     if (typeof q !== 'string' || q.length < 2) {
-      setSuggestionsList([])
+      setSuggestionsList([]);
       return;
     }
     // setLoading(true)
-    const response = await Global.Fetch(Global.format(URL.USER_INTEREST_AUTOCOMPLETE, encodeURI(filterToken)));
+    const response = await Global.Fetch(
+      Global.format(URL.USER_INTEREST_AUTOCOMPLETE, encodeURI(filterToken)),
+    );
     const items: UserInterestAutocomplete[] = response.data;
     const suggestions: UserInterestDto[] = items.map(item => {
-      return { id: item.name, number: item.name + " (" + item.countString + ")" }
+      return {
+        id: item.name,
+        number: item.name + ' (' + item.countString + ')',
+      };
     });
 
-    setSuggestionsList(suggestions)
+    setSuggestionsList(suggestions);
     // setLoading(false);
-  };
+  }
 
   async function addInterest(interest: string) {
     if (interest) {
       interest = cleanInterest(interest);
-      if (user) await Global.Fetch(Global.format(URL.USER_ADD_INTEREST, interest), 'post');
+      if (user)
+        await Global.Fetch(
+          Global.format(URL.USER_ADD_INTEREST, interest),
+          'post',
+        );
       let newInterest: UserInterest = { text: interest };
       const copy = [...interests];
       copy.push(newInterest);
       setInterests(copy);
       if (setInterestsExternal) setInterestsExternal(copy);
-      setInterest("");
+      setInterest('');
       Keyboard.dismiss();
       if (user) user.interests = copy;
     }
@@ -116,9 +146,9 @@ const InterestModal = ({ user, data, updateButtonText, setInterestsExternal }: I
   }
 
   function cleanInterest(txt: string) {
-    let txtCopy = txt
+    let txtCopy = txt;
     if (txtCopy) {
-      txtCopy = txtCopy.replace(/ /g, "-");
+      txtCopy = txtCopy.replace(/ /g, '-');
       let text = txtCopy.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
       return text;
     }
@@ -128,35 +158,61 @@ const InterestModal = ({ user, data, updateButtonText, setInterestsExternal }: I
   return (
     <View>
       <View style={{ padding: 12 }}>
-        {interests.length < Global.MAX_INTERESTS &&
+        {interests.length < Global.MAX_INTERESTS && (
           <Searchbar
             placeholder={i18n.t('profile.interest')}
             value={interest}
-            onChangeText={(text) => { setInterest(text) }}
+            onChangeText={text => {
+              setInterest(text);
+            }}
             onSubmitEditing={() => addInterest(interest)}
             autoCorrect={false}
             style={{ marginBottom: 18 }}
           />
-        }
-        {
-          suggestionsList.map((item, index) => (
-            <Button key={index} onPress={() => { addInterest(item.id) }} mode="elevated" style={{ marginRight: 8, marginBottom: 8 }}>
-              <Text>{item.number}</Text>
-            </Button>
-          ))
-        }
-        {suggestionsList?.length === 0 && <Text style={{ marginBottom: 8 }}>{i18n.t('profile.onboarding.interests')}</Text>}
-        <ScrollView style={{maxHeight: height > 500 ? 240 : 80}}>
+        )}
+        {suggestionsList.map((item, index) => (
+          <Button
+            key={index}
+            onPress={() => {
+              addInterest(item.id);
+            }}
+            mode="elevated"
+            style={{ marginRight: 8, marginBottom: 8 }}
+          >
+            <Text>{item.number}</Text>
+          </Button>
+        ))}
+        {suggestionsList?.length === 0 && (
+          <Text style={{ marginBottom: 8 }}>
+            {i18n.t('profile.onboarding.interests')}
+          </Text>
+        )}
+        <ScrollView style={{ maxHeight: height > 500 ? 240 : 80 }}>
           {suggestionsList?.length === 0 &&
             interests.map((item, index) => (
-              <Button key={index} onPress={() => { removeInterest(item) }} icon="close-circle" mode="elevated" style={{ marginRight: 8, marginBottom: 8 }}>
+              <Button
+                key={index}
+                onPress={() => {
+                  removeInterest(item);
+                }}
+                icon="close-circle"
+                mode="elevated"
+                style={{ marginRight: 8, marginBottom: 8 }}
+              >
                 <Text>{item.text}</Text>
               </Button>
-            ))
-          }
+            ))}
         </ScrollView>
       </View>
-      <Alert visible={alertVisible} setVisible={setAlertVisible} message={Global.format(i18n.t('profile.interest-alert-delete'), interestToBeDeleted?.text)} buttons={alertButtons} />
+      <Alert
+        visible={alertVisible}
+        setVisible={setAlertVisible}
+        message={Global.format(
+          i18n.t('profile.interest-alert-delete'),
+          interestToBeDeleted?.text,
+        )}
+        buttons={alertButtons}
+      />
     </View>
   );
 };

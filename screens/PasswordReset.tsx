@@ -1,33 +1,40 @@
-import React from "react";
-import { useTheme, Text, Button, Dialog, TextInput, IconButton, MaterialBottomTabScreenProps } from "react-native-paper";
-import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
+import React from 'react';
+import {
+  useTheme,
+  Text,
+  Button,
+  Dialog,
+  TextInput,
+  IconButton,
+  MaterialBottomTabScreenProps,
+} from 'react-native-paper';
+import { View, StyleSheet, Image, useWindowDimensions } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import * as Global from "../Global";
-import * as URL from "../URL";
-import * as I18N from "../i18n";
-import SvgPasswordReset from "../assets/images/password-reset.svg";
-import { Captcha, PasswordResetDto, RootStackParamList } from "../types";
-import VerticalView from "../components/VerticalView";
+import * as Global from '../Global';
+import * as URL from '../URL';
+import * as I18N from '../i18n';
+import SvgPasswordReset from '../assets/images/password-reset.svg';
+import { Captcha, PasswordResetDto, RootStackParamList } from '../types';
+import VerticalView from '../components/VerticalView';
 
-const i18n = I18N.getI18n()
-const IMAGE_HEADER = "data:image/webp;base64,";
+const i18n = I18N.getI18n();
+const IMAGE_HEADER = 'data:image/webp;base64,';
 
 WebBrowser.maybeCompleteAuthSession();
 
-type Props = MaterialBottomTabScreenProps<RootStackParamList, 'PasswordReset'>
+type Props = MaterialBottomTabScreenProps<RootStackParamList, 'PasswordReset'>;
 const PasswordReset = ({ route, navigation }: Props) => {
-
   const { colors } = useTheme();
 
   const svgHeight = 150;
   const svgWidth = 200;
   const { height, width } = useWindowDimensions();
 
-  const [email, setEmail] = React.useState("");
+  const [email, setEmail] = React.useState('');
   const [emailValid, setEmailValid] = React.useState(false);
   const [captchaId, setCaptchaId] = React.useState(0);
-  const [captchaImage, setCaptchaImage] = React.useState("");
-  const [captchaText, setCaptchaText] = React.useState("");
+  const [captchaImage, setCaptchaImage] = React.useState('');
+  const [captchaText, setCaptchaText] = React.useState('');
 
   //vars for dialog
   const [visible, setVisible] = React.useState(false);
@@ -42,7 +49,7 @@ const PasswordReset = ({ route, navigation }: Props) => {
       width: width,
       height: height,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     button: {
       alignItems: 'center',
@@ -56,11 +63,11 @@ const PasswordReset = ({ route, navigation }: Props) => {
     },
     svg: {
       marginTop: 24,
-      marginBottom: 12
+      marginBottom: 12,
     },
     profilePicButton: {
       width: 200,
-      height: 200
+      height: 200,
     },
     title: {
       textAlign: 'center',
@@ -80,22 +87,22 @@ const PasswordReset = ({ route, navigation }: Props) => {
       textAlign: 'center',
       marginTop: 24,
       opacity: 0.5,
-      fontSize: 10
+      fontSize: 10,
     },
     buttonText: {
-      color: 'white'
+      color: 'white',
     },
   });
 
   React.useEffect(() => {
     navigation.setOptions({
-      title: ''
+      title: '',
     });
   }, []);
 
   async function showCaptchaDialog() {
     if (emailValid) {
-      setCaptchaText("");
+      setCaptchaText('');
       let res = await Global.Fetch(URL.CATPCHA_GENERATE);
       let captcha: Captcha = res.data;
       setCaptchaId(captcha.id);
@@ -106,12 +113,16 @@ const PasswordReset = ({ route, navigation }: Props) => {
 
   async function resetPassword() {
     if (emailValid && captchaId && captchaText) {
-      setCaptchaText("");
-      let data: PasswordResetDto = { captchaId: captchaId, captchaText: captchaText, email: email }
+      setCaptchaText('');
+      let data: PasswordResetDto = {
+        captchaId: captchaId,
+        captchaText: captchaText,
+        email: email,
+      };
       try {
         await Global.Fetch(URL.PASSWORD_RESET, 'post', data);
         Global.ShowToast(i18n.t('password-reset-success'));
-        Global.navigate("Login");
+        Global.navigate('Login');
       } catch (e) {
         console.error(e);
         hideDialog();
@@ -122,10 +133,23 @@ const PasswordReset = ({ route, navigation }: Props) => {
 
   return (
     <VerticalView>
-      <Text style={{ textAlign: 'center', marginBottom: 12, fontSize: 32, fontWeight: '500' }}>{i18n.t('password-reset')}</Text>
+      <Text
+        style={{
+          textAlign: 'center',
+          marginBottom: 12,
+          fontSize: 32,
+          fontWeight: '500',
+        }}
+      >
+        {i18n.t('password-reset')}
+      </Text>
 
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <SvgPasswordReset style={styles.svg} height={svgHeight} width={svgWidth} />
+        <SvgPasswordReset
+          style={styles.svg}
+          height={svgHeight}
+          width={svgWidth}
+        />
       </View>
 
       <TextInput
@@ -140,13 +164,28 @@ const PasswordReset = ({ route, navigation }: Props) => {
         autoCapitalize="none"
       />
 
-      <Button icon="email" mode="contained" style={{ marginTop: 18 }} onPress={() => { showCaptchaDialog() }}
-      ><Text style={styles.buttonText}>{i18n.t('password-reset')}</Text></Button>
+      <Button
+        icon="email"
+        mode="contained"
+        style={{ marginTop: 18 }}
+        onPress={() => {
+          showCaptchaDialog();
+        }}
+      >
+        <Text style={styles.buttonText}>{i18n.t('password-reset')}</Text>
+      </Button>
 
-      <Dialog visible={visible} onDismiss={hideDialog}>
+      <Dialog
+        visible={visible}
+        onDismiss={hideDialog}
+      >
         <Dialog.Title>{i18n.t('captcha.title')}</Dialog.Title>
         <Dialog.Content>
-          <Image resizeMode='contain' style={{ height: 100 }} source={{ uri: captchaImage }} />
+          <Image
+            resizeMode="contain"
+            style={{ height: 100 }}
+            source={{ uri: captchaImage }}
+          />
           <TextInput
             mode="outlined"
             label={i18n.t('captcha.placeholder')}
@@ -159,18 +198,22 @@ const PasswordReset = ({ route, navigation }: Props) => {
             icon="reload"
             iconColor={colors.primary}
             size={20}
-            onPress={() => { showCaptchaDialog() }}
+            onPress={() => {
+              showCaptchaDialog();
+            }}
           />
           <IconButton
             icon="login-variant"
             iconColor={colors.primary}
             size={20}
-            onPress={() => { resetPassword() }}
+            onPress={() => {
+              resetPassword();
+            }}
           />
         </Dialog.Actions>
       </Dialog>
     </VerticalView>
-  )
+  );
 };
 
 export default PasswordReset;

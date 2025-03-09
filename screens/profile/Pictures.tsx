@@ -1,34 +1,41 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   TouchableOpacity,
   Image,
   StyleSheet,
   useWindowDimensions,
-  FlatList
-} from "react-native";
-import { WIDESCREEN_HORIZONTAL_MAX } from "../../assets/styles";
-import * as I18N from "../../i18n";
-import * as Global from "../../Global";
-import * as URL from "../../URL";
-import { RootStackParamList, UserDto, UserImage, YourProfileResource } from "../../types";
+  FlatList,
+} from 'react-native';
+import { WIDESCREEN_HORIZONTAL_MAX } from '../../assets/styles';
+import * as I18N from '../../i18n';
+import * as Global from '../../Global';
+import * as URL from '../../URL';
+import {
+  RootStackParamList,
+  UserDto,
+  UserImage,
+  YourProfileResource,
+} from '../../types';
 import { Button, MaterialBottomTabScreenProps } from 'react-native-paper';
-import Alert from "../../components/Alert";
-import VerticalView from "../../components/VerticalView";
+import Alert from '../../components/Alert';
+import VerticalView from '../../components/VerticalView';
 import { useHeaderHeight } from '@react-navigation/elements';
 
-type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Profile.Pictures'>
+type Props = MaterialBottomTabScreenProps<
+  RootStackParamList,
+  'Profile.Pictures'
+>;
 const Pictures = ({ route, navigation }: Props) => {
-
   var user: UserDto = route.params.user;
 
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
-  const i18n = I18N.getI18n()
+  const i18n = I18N.getI18n();
   const MAX_IMAGES = 4;
 
   const [alertVisible, setAlertVisible] = React.useState(false);
-  const [profilePic, setProfilePic] = React.useState("");
+  const [profilePic, setProfilePic] = React.useState('');
   const [images, setImages] = React.useState(Array<UserImage>);
   const [changedProfilePic, setChangedProfilePic] = React.useState(false);
   const [imageIdToBeRemoved, setImageIdToBeRemoved] = React.useState(0);
@@ -39,21 +46,26 @@ const Pictures = ({ route, navigation }: Props) => {
       onPress: () => {
         setAlertVisible(false);
         setImageIdToBeRemoved(0);
-      }
+      },
     },
     {
       text: i18n.t('ok'),
       onPress: async () => {
-        await Global.Fetch(Global.format(URL.USER_DELETE_IMAGE, String(imageIdToBeRemoved)), 'post');
+        await Global.Fetch(
+          Global.format(URL.USER_DELETE_IMAGE, String(imageIdToBeRemoved)),
+          'post',
+        );
         let imagesCopy = [...images];
-        let newImages = imagesCopy.filter(item => item.id !== imageIdToBeRemoved);
+        let newImages = imagesCopy.filter(
+          item => item.id !== imageIdToBeRemoved,
+        );
         setImages(newImages);
         setImageIdToBeRemoved(0);
         setAlertVisible(false);
         user.images = newImages;
-      }
-    }
-  ]
+      },
+    },
+  ];
 
   React.useEffect(() => {
     if (imageIdToBeRemoved) {
@@ -67,7 +79,7 @@ const Pictures = ({ route, navigation }: Props) => {
         e.preventDefault();
         goBack();
       }),
-    [navigation]
+    [navigation],
   );
 
   React.useEffect(() => {
@@ -87,10 +99,15 @@ const Pictures = ({ route, navigation }: Props) => {
     let imageData: string | null | undefined = await Global.pickImage();
     if (imageData) {
       const bodyFormData = Global.buildFormData(imageData);
-      await Global.Fetch(URL.USER_UPDATE_PROFILE_PICTURE, 'post', bodyFormData, 'multipart/form-data');
+      await Global.Fetch(
+        URL.USER_UPDATE_PROFILE_PICTURE,
+        'post',
+        bodyFormData,
+        'multipart/form-data',
+      );
       load();
       setChangedProfilePic(true);
-      navigation.setParams({changed: false});
+      navigation.setParams({ changed: false });
     }
   }
 
@@ -98,7 +115,12 @@ const Pictures = ({ route, navigation }: Props) => {
     let imageData: string | null | undefined = await Global.pickImage();
     if (imageData != null) {
       const bodyFormData = Global.buildFormData(imageData);
-      const response = await Global.Fetch(URL.USER_ADD_IMAGE, 'post', bodyFormData, 'multipart/form-data');
+      const response = await Global.Fetch(
+        URL.USER_ADD_IMAGE,
+        'post',
+        bodyFormData,
+        'multipart/form-data',
+      );
       const responseImages: UserImage[] = response.data;
       setImages(responseImages);
       user.images = responseImages;
@@ -127,30 +149,63 @@ const Pictures = ({ route, navigation }: Props) => {
     imageSmall: {
       width: '50%',
       maxWidth: '50%',
-    }
+    },
   });
 
   return (
     <View style={{ height: height - headerHeight }}>
-      <View style={{
-        zIndex: 1, position: 'absolute', marginBottom: 16,
-        marginRight: 16, width: '100%', right: 0, bottom: 0
-      }}>
+      <View
+        style={{
+          zIndex: 1,
+          position: 'absolute',
+          marginBottom: 16,
+          marginRight: 16,
+          width: '100%',
+          right: 0,
+          bottom: 0,
+        }}
+      >
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          {images.length < MAX_IMAGES &&
-            <Button icon="image-plus" mode="elevated" onPress={() => addImage()}>
+          {images.length < MAX_IMAGES && (
+            <Button
+              icon="image-plus"
+              mode="elevated"
+              onPress={() => addImage()}
+            >
               {i18n.t('profile.photos.add')}
             </Button>
-          }
+          )}
         </View>
       </View>
       <VerticalView onRefresh={load}>
         <TouchableOpacity
-          onPress={() => { updateProfilePicture() }}>
-          <Image source={{ uri: profilePic ? profilePic : undefined }} style={[style.image, { width: '70%', alignSelf: 'center', borderRadius: 12 }]} />
+          onPress={() => {
+            updateProfilePicture();
+          }}
+        >
+          <Image
+            source={{ uri: profilePic ? profilePic : undefined }}
+            style={[
+              style.image,
+              { width: '70%', alignSelf: 'center', borderRadius: 12 },
+            ]}
+          />
         </TouchableOpacity>
-        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: -54, marginBottom: 24 }}>
-          <Button mode="contained-tonal" style={{ width: 240 }} onPress={() => updateProfilePicture()}>{i18n.t('profile.photos.change-profile-pic')}</Button>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: -54,
+            marginBottom: 24,
+          }}
+        >
+          <Button
+            mode="contained-tonal"
+            style={{ width: 240 }}
+            onPress={() => updateProfilePicture()}
+          >
+            {i18n.t('profile.photos.change-profile-pic')}
+          </Button>
         </View>
         <View style={{ flexDirection: 'row', width: '100%' }}>
           <FlatList
@@ -160,16 +215,27 @@ const Pictures = ({ route, navigation }: Props) => {
             data={images}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity style={[style.image, style.imageSmall, { padding: 12 }]} onPress={() => removeImage(item.id)}>
-                <Image source={{ uri: item.content }} style={[style.image, { borderRadius: 8 }]} />
+              <TouchableOpacity
+                style={[style.image, style.imageSmall, { padding: 12 }]}
+                onPress={() => removeImage(item.id)}
+              >
+                <Image
+                  source={{ uri: item.content }}
+                  style={[style.image, { borderRadius: 8 }]}
+                />
               </TouchableOpacity>
             )}
           />
         </View>
-        <Alert visible={alertVisible} setVisible={setAlertVisible} message={i18n.t('profile.photos.delete')} buttons={alertButtons} />
+        <Alert
+          visible={alertVisible}
+          setVisible={setAlertVisible}
+          message={i18n.t('profile.photos.delete')}
+          buttons={alertButtons}
+        />
       </VerticalView>
     </View>
-  )
+  );
 };
 
 export default Pictures;

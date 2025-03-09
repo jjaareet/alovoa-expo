@@ -1,19 +1,41 @@
-import React, { useState } from "react";
-import { View, RefreshControl, ScrollView, useWindowDimensions } from "react-native";
-import CardStack, { Card } from "react-native-card-stack-swiper";
-import { UserDto, SearchResource, SearchDto, UnitsEnum, SearchParams, SearchParamsSortE, RootStackParamList } from "../types";
-import * as I18N from "../i18n";
-import * as Global from "../Global";
-import * as URL from "../URL";
+import React, { useState } from 'react';
+import {
+  View,
+  RefreshControl,
+  ScrollView,
+  useWindowDimensions,
+} from 'react-native';
+import CardStack, { Card } from 'react-native-card-stack-swiper';
+import {
+  UserDto,
+  SearchResource,
+  SearchDto,
+  UnitsEnum,
+  SearchParams,
+  SearchParamsSortE,
+  RootStackParamList,
+} from '../types';
+import * as I18N from '../i18n';
+import * as Global from '../Global';
+import * as URL from '../URL';
 import * as Location from 'expo-location';
-import { ActivityIndicator, Text, Button, IconButton, MaterialBottomTabScreenProps } from "react-native-paper";
-import CardItemSearch from "../components/CardItemSearch";
-import { useFocusEffect } from "@react-navigation/native";
-import ComplimentModal from "../components/ComplimentModal";
-import SearchEmpty from "../assets/images/search-empty.svg";
-import styles, { WIDESCREEN_HORIZONTAL_MAX, STATUS_BAR_HEIGHT } from "../assets/styles";
+import {
+  ActivityIndicator,
+  Text,
+  Button,
+  IconButton,
+  MaterialBottomTabScreenProps,
+} from 'react-native-paper';
+import CardItemSearch from '../components/CardItemSearch';
+import { useFocusEffect } from '@react-navigation/native';
+import ComplimentModal from '../components/ComplimentModal';
+import SearchEmpty from '../assets/images/search-empty.svg';
+import styles, {
+  WIDESCREEN_HORIZONTAL_MAX,
+  STATUS_BAR_HEIGHT,
+} from '../assets/styles';
 
-const i18n = I18N.getI18n()
+const i18n = I18N.getI18n();
 
 // enum SORT {
 //   DISTANCE = 1,
@@ -24,9 +46,8 @@ const i18n = I18N.getI18n()
 //   NEWEST_USER = 6
 // }
 
-type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Search'>
+type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Search'>;
 const Search = ({ route, navigation }: Props) => {
-
   let swiper: any = React.useRef(null);
   const [refreshing] = React.useState(false); // todo: setRefreshing
   const [user, setUser] = React.useState<UserDto>();
@@ -38,7 +59,8 @@ const Search = ({ route, navigation }: Props) => {
   const [loading, setLoading] = React.useState(false);
   const [index, setIndex] = React.useState(0);
   const [currentUser, setCurrentUser] = React.useState<UserDto>();
-  const [complimentModalVisible, setComplimentModalVisible] = React.useState(false);
+  const [complimentModalVisible, setComplimentModalVisible] =
+    React.useState(false);
   const [ignoreRightSwipe, setIgnoreRightSwipe] = React.useState(false);
   const [loaded, setLoaded] = React.useState(false);
 
@@ -61,7 +83,7 @@ const Search = ({ route, navigation }: Props) => {
       promise,
       new Promise((_resolve, reject) => setTimeout(() => reject(), timeoutMs)),
     ]);
-  }
+  };
 
   React.useEffect(() => {
     setStackKey(new Date().getTime());
@@ -85,10 +107,10 @@ const Search = ({ route, navigation }: Props) => {
       Global.GetStorage(Global.STORAGE_RELOAD_SEARCH).then(value => {
         if (value) {
           load();
-          Global.SetStorage(Global.STORAGE_RELOAD_SEARCH, "");
+          Global.SetStorage(Global.STORAGE_RELOAD_SEARCH, '');
         }
       });
-    }, [route, navigation])
+    }, [route, navigation]),
   );
 
   React.useEffect(() => {
@@ -97,7 +119,7 @@ const Search = ({ route, navigation }: Props) => {
       let resultsCopy = [...results];
       resultsCopy.shift();
       setResults(resultsCopy);
-      navigation.setParams({changed: false});
+      navigation.setParams({ changed: false });
       if (resultsCopy.length === 0) {
         load();
       }
@@ -112,20 +134,21 @@ const Search = ({ route, navigation }: Props) => {
     latitude = l1 ? Number(l1) : undefined;
     let l2 = await Global.GetStorage(Global.STORAGE_LONGITUDE);
     longitude = l2 ? Number(l2) : undefined;
-    await Global.Fetch(URL.API_RESOURCE_YOUR_PROFILE).then(
-      async (response) => {
-        let data: SearchResource = response.data;
-        if (!latitude) {
-          latitude = data.user.locationLatitude;
-        }
-        if (!longitude) {
-          longitude = data.user.locationLongitude;
-        }
-        setUser(data.user);
-        await updateLocationLocal(data.user.locationLatitude, data.user.locationLongitude);
-        await loadResults();
+    await Global.Fetch(URL.API_RESOURCE_YOUR_PROFILE).then(async response => {
+      let data: SearchResource = response.data;
+      if (!latitude) {
+        latitude = data.user.locationLatitude;
       }
-    );
+      if (!longitude) {
+        longitude = data.user.locationLongitude;
+      }
+      setUser(data.user);
+      await updateLocationLocal(
+        data.user.locationLatitude,
+        data.user.locationLongitude,
+      );
+      await loadResults();
+    });
     setLoading(false);
     setIndex(0);
     setLoaded(true);
@@ -139,7 +162,6 @@ const Search = ({ route, navigation }: Props) => {
   }
 
   async function loadResults() {
-    
     let lat = latitude;
     let lon = longitude;
     let hasLocation = lat !== undefined && lon !== undefined;
@@ -152,11 +174,20 @@ const Search = ({ route, navigation }: Props) => {
         if (status === 'granted') {
           hasLocationPermission = true;
           try {
-            let storedGpsTimeout = await Global.GetStorage(Global.STORAGE_ADV_SEARCH_GPSTIMEOPUT);
-            let gpsTimeout = storedGpsTimeout ? 
-              hasLocation ? Math.max(LOCATION_TIMEOUT_SHORT, Number(storedGpsTimeout)) : Math.max(LOCATION_TIMEOUT_LONG, Number(storedGpsTimeout)) :
-              hasLocation ? LOCATION_TIMEOUT_SHORT : LOCATION_TIMEOUT_LONG;
-            location = await promiseWithTimeout(gpsTimeout, Location.getCurrentPositionAsync({}));
+            let storedGpsTimeout = await Global.GetStorage(
+              Global.STORAGE_ADV_SEARCH_GPSTIMEOPUT,
+            );
+            let gpsTimeout = storedGpsTimeout
+              ? hasLocation
+                ? Math.max(LOCATION_TIMEOUT_SHORT, Number(storedGpsTimeout))
+                : Math.max(LOCATION_TIMEOUT_LONG, Number(storedGpsTimeout))
+              : hasLocation
+                ? LOCATION_TIMEOUT_SHORT
+                : LOCATION_TIMEOUT_LONG;
+            location = await promiseWithTimeout(
+              gpsTimeout,
+              Location.getCurrentPositionAsync({}),
+            );
             hasGpsEnabled = true;
             lat = location?.coords.latitude;
             lon = location?.coords.longitude;
@@ -171,18 +202,26 @@ const Search = ({ route, navigation }: Props) => {
         }
         setFirstSearch(false);
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     }
 
     if (lat !== undefined && lon !== undefined) {
-
-      let paramsStorage = await Global.GetStorage(Global.STORAGE_ADV_SEARCH_PARAMS);
-      let storedParams: SearchParams = paramsStorage ? JSON.parse(paramsStorage) : {};
+      let paramsStorage = await Global.GetStorage(
+        Global.STORAGE_ADV_SEARCH_PARAMS,
+      );
+      let storedParams: SearchParams = paramsStorage
+        ? JSON.parse(paramsStorage)
+        : {};
 
       let searchParams: SearchParams = {
-        distance: storedParams?.distance ? storedParams.distance : Global.DEFAULT_DISTANCE,
-        showOutsideParameters:  storedParams?.showOutsideParameters === undefined ? true : storedParams.showOutsideParameters,
+        distance: storedParams?.distance
+          ? storedParams.distance
+          : Global.DEFAULT_DISTANCE,
+        showOutsideParameters:
+          storedParams?.showOutsideParameters === undefined
+            ? true
+            : storedParams.showOutsideParameters,
         sort: SearchParamsSortE.DEFAULT,
         latitude: lat,
         longitude: lon,
@@ -191,7 +230,9 @@ const Search = ({ route, navigation }: Props) => {
         miscInfos: [],
         intentions: [],
         interests: [],
-        preferredGenderIds: user ? user.preferedGenders.map(gender => gender.id) : []
+        preferredGenderIds: user
+          ? user.preferedGenders.map(gender => gender.id)
+          : [],
       };
 
       //console.log(searchParams)
@@ -209,7 +250,10 @@ const Search = ({ route, navigation }: Props) => {
       if (!message) {
         await Global.Fetch(Global.format(URL.USER_LIKE, id), 'post');
       } else {
-        await Global.Fetch(Global.format(URL.USER_LIKE_MESSAGE, id, message), 'post');
+        await Global.Fetch(
+          Global.format(URL.USER_LIKE_MESSAGE, id, message),
+          'post',
+        );
       }
       if (pop) {
         swiper.current?.swipeRight();
@@ -244,7 +288,7 @@ const Search = ({ route, navigation }: Props) => {
   async function onLikePressed() {
     if (index < results.length) {
       let likesMe = results[index].likesCurrentUser;
-      if(!likesMe) {
+      if (!likesMe) {
         setComplimentModalVisible(true);
         setIgnoreRightSwipe(true);
       } else {
@@ -258,77 +302,149 @@ const Search = ({ route, navigation }: Props) => {
   }
 
   function openSearchSetting() {
-    Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})
+    Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {});
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flex: 1 }}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}>
-        
-      {loading &&
-        <View style={{ height: height, width: width, justifyContent: 'center', alignItems: 'center', position: "absolute" }} >
-          <ActivityIndicator animating={loading} size="large" />
-        </View>
-      }
-
-      <View style={[styles.top, { zIndex: 1, position: "absolute", width: '100%', marginHorizontal: 0, paddingTop: STATUS_BAR_HEIGHT + 8, justifyContent: 'flex-end' }]}>
-        { width > WIDESCREEN_HORIZONTAL_MAX &&
-          <Button icon="cog" mode="elevated" contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between' }}
-                      style={{ alignSelf: 'stretch', marginBottom: 8 }} onPress={openSearchSetting}>
-                        {i18n.t('profile.screen.search')}</Button>
-        }
-        { width <= WIDESCREEN_HORIZONTAL_MAX &&
-        <IconButton
-          icon="cog"
-          mode="contained"
-          size={20}
-          onPress={() => Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})}
+    <ScrollView
+      contentContainerStyle={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={load}
         />
-        }
+      }
+    >
+      {loading && (
+        <View
+          style={{
+            height: height,
+            width: width,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+          }}
+        >
+          <ActivityIndicator
+            animating={loading}
+            size="large"
+          />
+        </View>
+      )}
+
+      <View
+        style={[
+          styles.top,
+          {
+            zIndex: 1,
+            position: 'absolute',
+            width: '100%',
+            marginHorizontal: 0,
+            paddingTop: STATUS_BAR_HEIGHT + 8,
+            justifyContent: 'flex-end',
+          },
+        ]}
+      >
+        {width > WIDESCREEN_HORIZONTAL_MAX && (
+          <Button
+            icon="cog"
+            mode="elevated"
+            contentStyle={{
+              flexDirection: 'row-reverse',
+              justifyContent: 'space-between',
+            }}
+            style={{ alignSelf: 'stretch', marginBottom: 8 }}
+            onPress={openSearchSetting}
+          >
+            {i18n.t('profile.screen.search')}
+          </Button>
+        )}
+        {width <= WIDESCREEN_HORIZONTAL_MAX && (
+          <IconButton
+            icon="cog"
+            mode="contained"
+            size={20}
+            onPress={() =>
+              Global.navigate(Global.SCREEN_PROFILE_SEARCHSETTINGS, false, {})
+            }
+          />
+        )}
       </View>
 
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+        <View
+          style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}
+        >
           <CardStack
             ref={swiper}
             style={{
               justifyContent: 'flex-end',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
             verticalSwipe={false}
             renderNoMoreCards={() => null}
             key={stackKey}
             onSwipedLeft={hideUser}
-            onSwipedRight={onSwipeRight}>
-            {
-              results.map((card, index) => (
-                <Card key={card.uuid}>
-                  <CardItemSearch
-                    user={card}
-                    unitsImperial={user?.units === UnitsEnum.IMPERIAL}
-                    swiper={swiper}
-                    onLikePressed={onLikePressed}
-                    index={index}
-                  />
-                </Card>
-              ))
-            }
+            onSwipedRight={onSwipeRight}
+          >
+            {results.map((card, index) => (
+              <Card key={card.uuid}>
+                <CardItemSearch
+                  user={card}
+                  unitsImperial={user?.units === UnitsEnum.IMPERIAL}
+                  swiper={swiper}
+                  onLikePressed={onLikePressed}
+                  index={index}
+                />
+              </Card>
+            ))}
           </CardStack>
         </View>
       </View>
-      {results && results.length === 0 && loaded &&
-        <View style={{ height: height, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-          <View style={[styles.center, { maxWidth: WIDESCREEN_HORIZONTAL_MAX }]}>
-            <SearchEmpty height={svgHeight} width={svgWidth}></SearchEmpty>
-            <Text style={{ fontSize: 20, paddingHorizontal: 48, marginTop: 8 }}>{i18n.t('search-empty.title')}</Text>
-            <Text style={{ marginTop: 24, opacity: 0.6, paddingHorizontal: 48, textAlign: 'center' }}>{i18n.t('search-empty.subtitle')}</Text>
-            <Button onPress={openSearchSetting}>{i18n.t('search-empty.button')}</Button>
+      {results && results.length === 0 && loaded && (
+        <View
+          style={{
+            height: height,
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={[styles.center, { maxWidth: WIDESCREEN_HORIZONTAL_MAX }]}
+          >
+            <SearchEmpty
+              height={svgHeight}
+              width={svgWidth}
+            ></SearchEmpty>
+            <Text style={{ fontSize: 20, paddingHorizontal: 48, marginTop: 8 }}>
+              {i18n.t('search-empty.title')}
+            </Text>
+            <Text
+              style={{
+                marginTop: 24,
+                opacity: 0.6,
+                paddingHorizontal: 48,
+                textAlign: 'center',
+              }}
+            >
+              {i18n.t('search-empty.subtitle')}
+            </Text>
+            <Button onPress={openSearchSetting}>
+              {i18n.t('search-empty.button')}
+            </Button>
           </View>
         </View>
-      }
-      <ComplimentModal profilePicture={currentUser ? currentUser.profilePicture : ''} name={currentUser ? currentUser.firstName : ''}
-        age={currentUser ? currentUser.age : 0} onSend={likeUser} visible={complimentModalVisible} setVisible={setComplimentModalVisible}
-        onDismiss={onComplimentModalDismiss}></ComplimentModal>
+      )}
+      <ComplimentModal
+        profilePicture={currentUser ? currentUser.profilePicture : ''}
+        name={currentUser ? currentUser.firstName : ''}
+        age={currentUser ? currentUser.age : 0}
+        onSend={likeUser}
+        visible={complimentModalVisible}
+        setVisible={setComplimentModalVisible}
+        onDismiss={onComplimentModalDismiss}
+      ></ComplimentModal>
     </ScrollView>
   );
 };

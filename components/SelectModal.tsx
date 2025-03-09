@@ -1,33 +1,55 @@
-import React from "react";
-import { SelectModalT } from "../types";
-import { Modal, Portal, Text, Button, Checkbox, useTheme, IconButton } from 'react-native-paper';
-import { View, useWindowDimensions } from "react-native";
-import * as I18N from "../i18n";
-import { WIDESCREEN_HORIZONTAL_MAX } from "../assets/styles";
-import * as Global from "../Global";
+import React from 'react';
+import { SelectModalT } from '../types';
+import {
+  Modal,
+  Portal,
+  Text,
+  Button,
+  Checkbox,
+  useTheme,
+  IconButton,
+} from 'react-native-paper';
+import { View, useWindowDimensions } from 'react-native';
+import * as I18N from '../i18n';
+import { WIDESCREEN_HORIZONTAL_MAX } from '../assets/styles';
+import * as Global from '../Global';
 
-const SelectModal = ({ multi = false, disabled = false, minItems = 0, title, data, selected, onValueChanged }: SelectModalT) => {
-
+const SelectModal = ({
+  multi = false,
+  disabled = false,
+  minItems = 0,
+  title,
+  data,
+  selected,
+  onValueChanged,
+}: SelectModalT) => {
   const i18n = I18N.getI18n();
   const { colors } = useTheme();
   const { width } = useWindowDimensions();
-  
+
   const [selectedIds, setSelectedIds] = React.useState(selected);
-  const [buttonText, setButtonText] = React.useState("");
+  const [buttonText, setButtonText] = React.useState('');
   const [visible, setVisible] = React.useState(false);
   const [buttonDisabled, setButtonDisabled] = React.useState(disabled);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = { backgroundColor: colors.background, padding: 24, marginHorizontal: calcMarginModal(), borderRadius: 8 };
+  const containerStyle = {
+    backgroundColor: colors.background,
+    padding: 24,
+    marginHorizontal: calcMarginModal(),
+    borderRadius: 8,
+  };
 
   function calcMarginModal() {
     return width < WIDESCREEN_HORIZONTAL_MAX + 12 ? 12 : width / 5 + 12;
   }
 
   function updateButtonText() {
-    let text = [...data.entries()].filter(([key, value]) => 
-      selectedIds.includes(value[0])).map(([key, value]) => value[1] !== undefined ? i18n.t(value[1]) : '').join(", ");
-    if(!text) {
+    let text = [...data.entries()]
+      .filter(([key, value]) => selectedIds.includes(value[0]))
+      .map(([key, value]) => (value[1] !== undefined ? i18n.t(value[1]) : ''))
+      .join(', ');
+    if (!text) {
       text = Global.EMPTY_STRING;
     }
     setButtonText(text);
@@ -49,7 +71,11 @@ const SelectModal = ({ multi = false, disabled = false, minItems = 0, title, dat
   return (
     <View>
       <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle} >
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+        >
           <View>
             <IconButton
               style={{ alignSelf: 'flex-end' }}
@@ -61,7 +87,9 @@ const SelectModal = ({ multi = false, disabled = false, minItems = 0, title, dat
           <Text style={{ marginBottom: 12 }}>{title}</Text>
           <View style={{ padding: 12 }}>
             {[...data].map(([key, value], index) => (
-              <Checkbox.Item label={value ? i18n.t(value) : ''} key={index}
+              <Checkbox.Item
+                label={value ? i18n.t(value) : ''}
+                key={index}
                 status={selectedIds.includes(key) ? 'checked' : 'unchecked'}
                 onPress={() => {
                   let hasItem = selectedIds.includes(key);
@@ -73,7 +101,7 @@ const SelectModal = ({ multi = false, disabled = false, minItems = 0, title, dat
                       }
                     } else {
                       const copy = [...selectedIds];
-                      copy.push(key)
+                      copy.push(key);
                       setSelectedIds(copy);
                     }
                     onValueChanged(key, !hasItem);
@@ -89,8 +117,19 @@ const SelectModal = ({ multi = false, disabled = false, minItems = 0, title, dat
         </Modal>
       </Portal>
       <Text style={{ paddingBottom: 4 }}>{title}</Text>
-      <Button disabled={buttonDisabled} icon="chevron-right" mode="elevated" contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between' }}
-        style={{ alignSelf: 'stretch' }} onPress={showModal}>{buttonText}</Button>
+      <Button
+        disabled={buttonDisabled}
+        icon="chevron-right"
+        mode="elevated"
+        contentStyle={{
+          flexDirection: 'row-reverse',
+          justifyContent: 'space-between',
+        }}
+        style={{ alignSelf: 'stretch' }}
+        onPress={showModal}
+      >
+        {buttonText}
+      </Button>
     </View>
   );
 };

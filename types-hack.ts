@@ -11,7 +11,10 @@ import {
   RouteGroupConfig,
   TabNavigationState,
 } from '@react-navigation/native';
-import { MaterialBottomTabNavigationEventMap, MaterialBottomTabNavigationOptions } from 'react-native-paper';
+import {
+  MaterialBottomTabNavigationEventMap,
+  MaterialBottomTabNavigationOptions,
+} from 'react-native-paper';
 import { MaterialBottomTabNavigatorProps } from 'react-native-paper/lib/typescript/react-navigation/navigators/createMaterialBottomTabNavigator';
 
 type LegacyTypedNavigator<
@@ -22,8 +25,18 @@ type LegacyTypedNavigator<
   Navigator extends React.ComponentType<any>,
 > = {
   Navigator: React.ComponentType<
-    Omit<React.ComponentProps<Navigator>, keyof DefaultNavigatorOptions<any, any, any, any, any, any>> &
-      DefaultNavigatorOptions<ParamList, any, State, ScreenOptions, EventMap, any>
+    Omit<
+      React.ComponentProps<Navigator>,
+      keyof DefaultNavigatorOptions<any, any, any, any, any, any>
+    > &
+      DefaultNavigatorOptions<
+        ParamList,
+        any,
+        State,
+        ScreenOptions,
+        EventMap,
+        any
+      >
   >;
   Group: React.ComponentType<RouteGroupConfig<ParamList, ScreenOptions, any>>;
   Screen: <RouteName extends keyof ParamList>(
@@ -31,10 +44,11 @@ type LegacyTypedNavigator<
   ) => null;
 };
 
-export type MaterialBottomTabNavigator<T extends ParamListBase> = LegacyTypedNavigator<
-  T,
-  TabNavigationState<ParamListBase>,
-  MaterialBottomTabNavigationOptions,
-  MaterialBottomTabNavigationEventMap,
-  (_: MaterialBottomTabNavigatorProps) => React.JSX.Element
->;
+export type MaterialBottomTabNavigator<T extends ParamListBase> =
+  LegacyTypedNavigator<
+    T,
+    TabNavigationState<ParamListBase>,
+    MaterialBottomTabNavigationOptions,
+    MaterialBottomTabNavigationEventMap,
+    (_: MaterialBottomTabNavigatorProps) => React.JSX.Element
+  >;

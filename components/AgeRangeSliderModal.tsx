@@ -1,9 +1,16 @@
-import React from "react";
-import { GRAY, WIDESCREEN_HORIZONTAL_MAX } from "../assets/styles";
-import { RangeSliderModalT } from "../types";
-import { Modal, Portal, Text, Button, useTheme, IconButton } from 'react-native-paper';
-import { View, useWindowDimensions } from "react-native";
-import Slider from "@react-native-community/slider";
+import React from 'react';
+import { GRAY, WIDESCREEN_HORIZONTAL_MAX } from '../assets/styles';
+import { RangeSliderModalT } from '../types';
+import {
+  Modal,
+  Portal,
+  Text,
+  Button,
+  useTheme,
+  IconButton,
+} from 'react-native-paper';
+import { View, useWindowDimensions } from 'react-native';
+import Slider from '@react-native-community/slider';
 
 const AgeRangeSliderModal = ({
   title,
@@ -12,35 +19,40 @@ const AgeRangeSliderModal = ({
   valueLower = 0,
   valueUpper = 0,
   onValueLowerChanged,
-  onValueUpperChanged }: RangeSliderModalT) => {
-
+  onValueUpperChanged,
+}: RangeSliderModalT) => {
   const MIN_AGE = 18;
   const MAX_AGE = 100;
 
   const { colors } = useTheme();
   const { width } = useWindowDimensions();
 
-  const [minAgeText, setMinAgeText] = React.useState(MIN_AGE)
-  const [maxAgeText, setMaxAgeText] = React.useState(MAX_AGE)
+  const [minAgeText, setMinAgeText] = React.useState(MIN_AGE);
+  const [maxAgeText, setMaxAgeText] = React.useState(MAX_AGE);
   const [lowerValue, setLowerValue] = React.useState(valueLower);
   const [upperValue, setUpperValue] = React.useState(valueUpper);
-  const [buttonText, setButtonText] = React.useState("");
+  const [buttonText, setButtonText] = React.useState('');
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = { backgroundColor: colors.background, padding: 24, marginHorizontal: calcMarginModal(), borderRadius: 8 };
+  const containerStyle = {
+    backgroundColor: colors.background,
+    padding: 24,
+    marginHorizontal: calcMarginModal(),
+    borderRadius: 8,
+  };
 
   function calcMarginModal() {
     return width < WIDESCREEN_HORIZONTAL_MAX + 12 ? 12 : width / 5 + 12;
   }
 
   function updateButtonText() {
-    let text = lowerValue.toString() + " - " + upperValue.toString();
+    let text = lowerValue.toString() + ' - ' + upperValue.toString();
     setButtonText(text);
   }
 
   React.useEffect(() => {
-    setLowerValue(valueLower)
+    setLowerValue(valueLower);
     setMinAgeText(valueLower);
   }, [valueLower]);
 
@@ -56,7 +68,11 @@ const AgeRangeSliderModal = ({
   return (
     <View>
       <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle} >
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+        >
           <View>
             <IconButton
               style={{ alignSelf: 'flex-end' }}
@@ -115,8 +131,18 @@ const AgeRangeSliderModal = ({
         </Modal>
       </Portal>
       <Text style={{ paddingBottom: 4 }}>{title}</Text>
-      <Button icon="chevron-right" mode="elevated" contentStyle={{ flexDirection: 'row-reverse', justifyContent: 'space-between' }}
-        style={{ alignSelf: 'stretch' }} onPress={showModal}>{buttonText}</Button>
+      <Button
+        icon="chevron-right"
+        mode="elevated"
+        contentStyle={{
+          flexDirection: 'row-reverse',
+          justifyContent: 'space-between',
+        }}
+        style={{ alignSelf: 'stretch' }}
+        onPress={showModal}
+      >
+        {buttonText}
+      </Button>
     </View>
   );
 };

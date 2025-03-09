@@ -1,18 +1,29 @@
-import React from "react";
-import { WIDESCREEN_HORIZONTAL_MAX } from "../../assets/styles";
-import { Modal, Portal, Text, useTheme, IconButton, Surface, TextInput, MaterialBottomTabScreenProps } from 'react-native-paper';
-import { Pressable, View, useWindowDimensions } from "react-native";
-import * as I18N from "../../i18n";
-import * as Global from "../../Global";
-import * as URL from "../../URL";
-import { RootStackParamList, UserDto, UserPrompt } from "../../types";
-import Alert from "../../components/Alert";
+import React from 'react';
+import { WIDESCREEN_HORIZONTAL_MAX } from '../../assets/styles';
+import {
+  Modal,
+  Portal,
+  Text,
+  useTheme,
+  IconButton,
+  Surface,
+  TextInput,
+  MaterialBottomTabScreenProps,
+} from 'react-native-paper';
+import { Pressable, View, useWindowDimensions } from 'react-native';
+import * as I18N from '../../i18n';
+import * as Global from '../../Global';
+import * as URL from '../../URL';
+import { RootStackParamList, UserDto, UserPrompt } from '../../types';
+import Alert from '../../components/Alert';
 import { useHeaderHeight } from '@react-navigation/elements';
-import VerticalView from "../../components/VerticalView";
+import VerticalView from '../../components/VerticalView';
 
-type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Profile.Prompts'>
+type Props = MaterialBottomTabScreenProps<
+  RootStackParamList,
+  'Profile.Prompts'
+>;
 const Prompts = ({ route }: Props) => {
-
   var user: UserDto = route.params.user;
 
   const { colors } = useTheme();
@@ -22,39 +33,51 @@ const Prompts = ({ route }: Props) => {
   const maxPrompts = 6;
   const maxPromptAmount = 20;
   const maxPromptTextLength = 120;
-  const promptIdArray = Array.from({ length: maxPromptAmount }, (v, k) => k + 1);;
+  const promptIdArray = Array.from(
+    { length: maxPromptAmount },
+    (v, k) => k + 1,
+  );
 
   enum ModalModeE {
     ADD = 1,
     EDIT = 2,
-    DELETE = 3
+    DELETE = 3,
   }
 
   const [visible, setVisible] = React.useState(false);
-  const [prompts, setPrompts] = React.useState<Map<number, UserPrompt>>(new Map());
+  const [prompts, setPrompts] = React.useState<Map<number, UserPrompt>>(
+    new Map(),
+  );
   const [modalId, setModalId] = React.useState(0);
-  const [modalText, setModalText] = React.useState("");
-  const [modalTitle, setModalTitle] = React.useState("");
+  const [modalText, setModalText] = React.useState('');
+  const [modalTitle, setModalTitle] = React.useState('');
   const [modalMode, setModalMode] = React.useState<ModalModeE>(ModalModeE.ADD);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const [alertVisible, setAlertVisible] = React.useState(false);
-  const containerStyle = { backgroundColor: colors.elevation.level3, padding: 24, marginHorizontal: calcMarginModal(), borderRadius: 8 };
+  const containerStyle = {
+    backgroundColor: colors.elevation.level3,
+    padding: 24,
+    marginHorizontal: calcMarginModal(),
+    borderRadius: 8,
+  };
 
   const alertButtons = [
     {
       text: i18n.t('cancel'),
-      onPress: () => { setAlertVisible(false); },
+      onPress: () => {
+        setAlertVisible(false);
+      },
     },
     {
       text: i18n.t('ok'),
-      onPress: () => deletePrompt(modalId)
-    }
-  ]
+      onPress: () => deletePrompt(modalId),
+    },
+  ];
 
   React.useEffect(() => {
     if (user.prompts) {
-      let map = new Map(user.prompts.map((obj) => [obj.promptId, obj]));
+      let map = new Map(user.prompts.map(obj => [obj.promptId, obj]));
       setPrompts(map);
     }
   }, []);
@@ -63,7 +86,7 @@ const Prompts = ({ route }: Props) => {
     return width < WIDESCREEN_HORIZONTAL_MAX + 12 ? 12 : width / 5 + 12;
   }
 
-  function openModal(mode: ModalModeE, prompt: UserPrompt,) {
+  function openModal(mode: ModalModeE, prompt: UserPrompt) {
     setModalId(prompt.promptId);
     setModalText(prompt.text);
     setModalTitle(i18n.t('profile.prompts.' + prompt.promptId));
@@ -81,7 +104,7 @@ const Prompts = ({ route }: Props) => {
     setPrompts(copy);
     user.prompts = Array.from(copy.values());
     hideModal();
-    await Global.Fetch(URL.USER_PROMPT_ADD, "post", prompt);
+    await Global.Fetch(URL.USER_PROMPT_ADD, 'post', prompt);
   }
 
   async function updatePrompt(prompt: UserPrompt) {
@@ -90,7 +113,7 @@ const Prompts = ({ route }: Props) => {
     setPrompts(copy);
     user.prompts = Array.from(copy.values());
     hideModal();
-    await Global.Fetch(URL.USER_PROMPT_UPDATE, "post", prompt);
+    await Global.Fetch(URL.USER_PROMPT_UPDATE, 'post', prompt);
   }
 
   async function deletePrompt(promptId: number) {
@@ -99,7 +122,7 @@ const Prompts = ({ route }: Props) => {
     setPrompts(copy);
     user.prompts = Array.from(copy.values());
     setAlertVisible(false);
-    await Global.Fetch(Global.format(URL.USER_PROMPT_DELETE, promptId), "post");
+    await Global.Fetch(Global.format(URL.USER_PROMPT_DELETE, promptId), 'post');
   }
 
   function modalOkPressed() {
@@ -108,8 +131,7 @@ const Prompts = ({ route }: Props) => {
     prompt.text = modalText;
     if (modalMode === ModalModeE.ADD) {
       addPrompt(prompt);
-    }
-    else if (modalMode === ModalModeE.EDIT) {
+    } else if (modalMode === ModalModeE.EDIT) {
       updatePrompt(prompt);
     }
   }
@@ -117,15 +139,26 @@ const Prompts = ({ route }: Props) => {
   return (
     <View style={{ height: height - headerHeight }}>
       <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle} >
-          <Text style={{ fontSize: 20, marginBottom: 8, paddingHorizontal: 16 }}>{modalTitle}</Text>
-          <TextInput style={{ backgroundColor: colors.elevation.level3 }}
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+        >
+          <Text
+            style={{ fontSize: 20, marginBottom: 8, paddingHorizontal: 16 }}
+          >
+            {modalTitle}
+          </Text>
+          <TextInput
+            style={{ backgroundColor: colors.elevation.level3 }}
             defaultValue={modalText}
             maxLength={maxPromptTextLength}
             autoCorrect={false}
-            onChangeText={text => setModalText(text)}>
-          </TextInput>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            onChangeText={text => setModalText(text)}
+          ></TextInput>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
             <IconButton
               icon="close"
               size={28}
@@ -142,10 +175,19 @@ const Prompts = ({ route }: Props) => {
       </Portal>
       <VerticalView>
         {[...prompts].map(([id, prompt]) => (
-          <Surface key={id} style={{ padding: 24, borderRadius: 12, marginBottom: 8 }}>
-            <Text style={{ fontSize: 14, fontWeight: 'bold', marginBottom: 8 }}>{i18n.t('profile.prompts.' + id)}</Text>
-            <Text style={{ marginBottom: 12, fontSize: 20 }}>{prompt.text}</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Surface
+            key={id}
+            style={{ padding: 24, borderRadius: 12, marginBottom: 8 }}
+          >
+            <Text style={{ fontSize: 14, fontWeight: 'bold', marginBottom: 8 }}>
+              {i18n.t('profile.prompts.' + id)}
+            </Text>
+            <Text style={{ marginBottom: 12, fontSize: 20 }}>
+              {prompt.text}
+            </Text>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
               <IconButton
                 icon="delete"
                 size={28}
@@ -160,23 +202,43 @@ const Prompts = ({ route }: Props) => {
             </View>
           </Surface>
         ))}
-        {
-          prompts.size < maxPrompts &&
-          <Text style={{ fontSize: 20, marginBottom: 18, marginTop: 26 }}>{i18n.t('profile.prompts.add')}</Text>
-        }
-        {
-          prompts.size < maxPrompts && promptIdArray.filter(index => !prompts.has(index)).map(index => (
-            <Pressable key={index} onPress={() => {
-              openModal(ModalModeE.ADD, { promptId: index, text: "" });
-            }}>
-              <Surface style={{ padding: 24, borderRadius: 12, marginBottom: 8 }}>
-                <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>{i18n.t('profile.prompts.' + (index)) + '…'}</Text>
-              </Surface>
-            </Pressable>
-          ))
-        }
+        {prompts.size < maxPrompts && (
+          <Text style={{ fontSize: 20, marginBottom: 18, marginTop: 26 }}>
+            {i18n.t('profile.prompts.add')}
+          </Text>
+        )}
+        {prompts.size < maxPrompts &&
+          promptIdArray
+            .filter(index => !prompts.has(index))
+            .map(index => (
+              <Pressable
+                key={index}
+                onPress={() => {
+                  openModal(ModalModeE.ADD, { promptId: index, text: '' });
+                }}
+              >
+                <Surface
+                  style={{ padding: 24, borderRadius: 12, marginBottom: 8 }}
+                >
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {i18n.t('profile.prompts.' + index) + '…'}
+                  </Text>
+                </Surface>
+              </Pressable>
+            ))}
       </VerticalView>
-      <Alert visible={alertVisible} setVisible={setAlertVisible} message={i18n.t('profile.prompts.delete')} buttons={alertButtons} />
+      <Alert
+        visible={alertVisible}
+        setVisible={setAlertVisible}
+        message={i18n.t('profile.prompts.delete')}
+        buttons={alertButtons}
+      />
     </View>
   );
 };

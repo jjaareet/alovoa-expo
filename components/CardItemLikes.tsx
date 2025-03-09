@@ -1,16 +1,18 @@
-import React from "react";
-import { View, Image, TouchableOpacity, StyleProp, TextStyle, useWindowDimensions } from "react-native";
-import { useTheme, Text, IconButton } from "react-native-paper";
-import { CardItemT, LikeResultT } from "../types";
-import * as Global from "../Global";
-import styles, {
-  WIDESCREEN_HORIZONTAL_MAX
-} from "../assets/styles";
+import React from 'react';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  StyleProp,
+  TextStyle,
+  useWindowDimensions,
+} from 'react-native';
+import { useTheme, Text, IconButton } from 'react-native-paper';
+import { CardItemT, LikeResultT } from '../types';
+import * as Global from '../Global';
+import styles, { WIDESCREEN_HORIZONTAL_MAX } from '../assets/styles';
 
-const CardItem = ({
-  user, message, onMessagePressed
-}: CardItemT) => {
-
+const CardItem = ({ user, message, onMessagePressed }: CardItemT) => {
   const { colors } = useTheme();
   const { width } = useWindowDimensions();
 
@@ -33,25 +35,36 @@ const CardItem = ({
       paddingBottom: 5,
       fontSize: 15,
       textAlign: 'center',
-      textAlignVertical: 'center'
+      textAlignVertical: 'center',
     },
   ];
 
   return (
-    <View style={[styles.containerCardItem, { backgroundColor: colors.background, paddingBottom: 4 }]}>
+    <View
+      style={[
+        styles.containerCardItem,
+        { backgroundColor: colors.background, paddingBottom: 4 },
+      ]}
+    >
       {/* IMAGE */}
       <TouchableOpacity onPress={() => Global.nagivateProfile(user)}>
-        <Image source={{ uri: user.profilePicture ? user.profilePicture : undefined }} style={imageStyle} />
+        <Image
+          source={{
+            uri: user.profilePicture ? user.profilePicture : undefined,
+          }}
+          style={imageStyle}
+        />
       </TouchableOpacity>
 
       {/* NAME */}
       <View>
-        <View style={{ flexDirection: 'row' }}><Text style={nameStyle}>{user.firstName + ", " + user.age}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={nameStyle}>{user.firstName + ', ' + user.age}</Text>
         </View>
       </View>
 
-      {message &&
-        <View style={{ position: "absolute", top: 0, left: 0 }}>
+      {message && (
+        <View style={{ position: 'absolute', top: 0, left: 0 }}>
           <IconButton
             icon="text"
             size={32}
@@ -66,7 +79,7 @@ const CardItem = ({
             }}
           />
         </View>
-      }
+      )}
     </View>
   );
 };
