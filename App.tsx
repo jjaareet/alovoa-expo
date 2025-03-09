@@ -1,33 +1,57 @@
-import React from "react";
-import Main from "./screens/Main";
-import { Login, Register, Onboarding, Profile, MessageDetail, PasswordReset } from "./screens";
+import React from 'react';
+import Main from './screens/Main';
+import {
+  Login,
+  Register,
+  Onboarding,
+  Profile,
+  MessageDetail,
+  PasswordReset,
+} from './screens';
 import * as SplashScreen from 'expo-splash-screen';
 import * as WebBrowser from 'expo-web-browser';
-import { NavigationContainer } from "@react-navigation/native";
-import * as Global from "./Global";
-import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from '@react-navigation/native';
+import * as Global from './Global';
+import { createStackNavigator } from '@react-navigation/stack';
 import { LogBox, useColorScheme } from 'react-native';
-import { MD3LightTheme, MD3DarkTheme, Provider as PaperProvider, configureFonts } from 'react-native-paper';
+import {
+  MD3LightTheme,
+  MD3DarkTheme,
+  Provider as PaperProvider,
+  configureFonts,
+} from 'react-native-paper';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { Pictures, ProfileSettings, SearchSettings, Settings, Prompts, AdvancedSettings } from "./screens/profile/index";
+import {
+  Pictures,
+  ProfileSettings,
+  SearchSettings,
+  Settings,
+  Prompts,
+  AdvancedSettings,
+} from './screens/profile/index';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Device from 'expo-device';
-import { ThemeProp } from "react-native-paper/lib/typescript/types";
+import { ThemeProp } from 'react-native-paper/lib/typescript/types';
 import Toast, { BaseToast } from 'react-native-toast-message';
-import * as I18N from "./i18n";
+import * as I18N from './i18n';
 import {
-  useFonts, Montserrat_400Regular, Montserrat_500Medium, Montserrat_500Medium_Italic,
-  Montserrat_600SemiBold, Montserrat_700Bold, Montserrat_700Bold_Italic
+  useFonts,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_500Medium_Italic,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+  Montserrat_700Bold_Italic,
 } from '@expo-google-fonts/montserrat';
-import { TransitionSpec } from "@react-navigation/stack/src/types";
-import { enGB, en, de, registerTranslation } from 'react-native-paper-dates'
+import { TransitionSpec } from '@react-navigation/stack/src/types';
+import { enGB, en, de, registerTranslation } from 'react-native-paper-dates';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { RootStackParamList } from "./types";
+import { RootStackParamList } from './types';
 
 LogBox.ignoreAllLogs();
 SplashScreen.preventAutoHideAsync();
-setTimeout(SplashScreen.hideAsync, 1000)
+setTimeout(SplashScreen.hideAsync, 1000);
 WebBrowser.maybeCompleteAuthSession();
 const Stack = createStackNavigator<RootStackParamList>();
 registerTranslation('en-GB', enGB);
@@ -35,19 +59,26 @@ registerTranslation('en', en);
 registerTranslation('de', de);
 
 export default function App() {
-
   const i18n = I18N.getI18n();
 
-  const [colorPrimary, setColorPrimary] = React.useState(Global.DEFAULT_COLOR_PRIMARY);
-  const [colorSecondary, setColorSecondary] = React.useState(Global.DEFAULT_COLOR_SECONDARY);
+  const [colorPrimary, setColorPrimary] = React.useState(
+    Global.DEFAULT_COLOR_PRIMARY,
+  );
+  const [colorSecondary, setColorSecondary] = React.useState(
+    Global.DEFAULT_COLOR_SECONDARY,
+  );
 
   React.useEffect(() => {
     load();
   }, []);
 
   async function load() {
-    let primary: string | null = await Global.GetStorage(Global.STORAGE_SETTINGS_COLOR_PRIMARY);
-    let secondary: string | null = await Global.GetStorage(Global.STORAGE_SETTINGS_COLOR_SECONDARY);
+    let primary: string | null = await Global.GetStorage(
+      Global.STORAGE_SETTINGS_COLOR_PRIMARY,
+    );
+    let secondary: string | null = await Global.GetStorage(
+      Global.STORAGE_SETTINGS_COLOR_SECONDARY,
+    );
     if (primary) {
       setColorPrimary(primary);
     }
@@ -66,7 +97,7 @@ export default function App() {
     Montserrat_500Medium_Italic,
     Montserrat_600SemiBold,
     Montserrat_700Bold,
-    Montserrat_700Bold_Italic
+    Montserrat_700Bold_Italic,
   });
 
   const config: TransitionSpec = {
@@ -107,21 +138,21 @@ export default function App() {
     semiBold: {
       ...baseVariants.bodyMedium,
       fontFamily: 'Montserrat_600SemiBold',
-    }
+    },
   } as const;
 
   const isDarkTheme = useColorScheme() === 'dark';
 
   const theme: ThemeProp = {
-    ...isDarkTheme ? MD3DarkTheme : MD3LightTheme,
+    ...(isDarkTheme ? MD3DarkTheme : MD3LightTheme),
     roundness: 2,
     version: 3,
     colors: {
-      ...isDarkTheme ? MD3DarkTheme.colors : MD3LightTheme.colors,
+      ...(isDarkTheme ? MD3DarkTheme.colors : MD3LightTheme.colors),
       primary: colorPrimary,
       secondary: colorSecondary,
-      tertiary: '#F2D3DD', /*not used*/
-      background: isDarkTheme ? '#000000' : "#FFFFFF"
+      tertiary: '#F2D3DD' /*not used*/,
+      background: isDarkTheme ? '#000000' : '#FFFFFF',
     },
   };
 
@@ -129,10 +160,13 @@ export default function App() {
     success: (props: any) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: theme.colors?.primary, backgroundColor: theme.colors?.surface }}
+        style={{
+          borderLeftColor: theme.colors?.primary,
+          backgroundColor: theme.colors?.surface,
+        }}
         text1Style={{
           fontFamily: 'Montserrat_400Regular',
-          color: theme.colors?.onSurface
+          color: theme.colors?.onSurface,
         }}
         text1NumberOfLines={4}
       />
@@ -140,9 +174,9 @@ export default function App() {
   };
 
   const themeNavigation = {
-    ...isDarkTheme ? DarkTheme : DefaultTheme,
+    ...(isDarkTheme ? DarkTheme : DefaultTheme),
     colors: {
-      ...isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
+      ...(isDarkTheme ? DarkTheme.colors : DefaultTheme.colors),
     },
   };
 
@@ -160,13 +194,18 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1, overflow: 'scroll' }}>
       <PaperProvider theme={{ ...theme, fonts }}>
-        <StatusBar style={isDarkTheme ? "light" : "dark"} />
-        <NavigationContainer theme={themeNavigation} ref={Global.navigationRef}>
+        <StatusBar style={isDarkTheme ? 'light' : 'dark'} />
+        <NavigationContainer
+          theme={themeNavigation}
+          ref={Global.navigationRef}
+        >
           <Stack.Navigator>
             <Stack.Screen
               name="Login"
               options={{
-                headerShown: false, animation: 'default', transitionSpec: {
+                headerShown: false,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -177,7 +216,9 @@ export default function App() {
               name="Register"
               options={{
                 title: i18n.t('register.title'),
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -187,7 +228,9 @@ export default function App() {
             <Stack.Screen
               name="Onboarding"
               options={{
-                headerShown: false, animation: 'default', transitionSpec: {
+                headerShown: false,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -197,7 +240,9 @@ export default function App() {
             <Stack.Screen
               name="Main"
               options={{
-                headerShown: false, animation: 'default', transitionSpec: {
+                headerShown: false,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -207,7 +252,9 @@ export default function App() {
             <Stack.Screen
               name="Profile"
               options={{
-                headerShown: false, animation: 'default', transitionSpec: {
+                headerShown: false,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -217,7 +264,9 @@ export default function App() {
             <Stack.Screen
               name="MessageDetail"
               options={{
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -228,7 +277,9 @@ export default function App() {
               name={Global.SCREEN_PROFILE_PICTURES}
               options={{
                 title: i18n.t('profile.screen.pictures'),
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -239,7 +290,9 @@ export default function App() {
               name={Global.SCREEN_PROFILE_PROFILESETTINGS}
               options={{
                 title: i18n.t('profile.screen.profile'),
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -250,7 +303,9 @@ export default function App() {
               name={Global.SCREEN_PROFILE_SEARCHSETTINGS}
               options={{
                 title: i18n.t('profile.screen.search'),
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -261,7 +316,9 @@ export default function App() {
               name={Global.SCREEN_PROFILE_SETTINGS}
               options={{
                 title: i18n.t('profile.screen.settings'),
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -272,7 +329,9 @@ export default function App() {
               name={Global.SCREEN_PROFILE_ADVANCED_SETTINGS}
               options={{
                 title: i18n.t('profile.screen.advanced-settings'),
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -282,7 +341,9 @@ export default function App() {
             <Stack.Screen
               name="PasswordReset"
               options={{
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },
@@ -293,7 +354,9 @@ export default function App() {
               name="Profile.Prompts"
               options={{
                 title: i18n.t('profile.screen.prompts'),
-                headerShown: true, animation: 'default', transitionSpec: {
+                headerShown: true,
+                animation: 'default',
+                transitionSpec: {
                   open: config,
                   close: config,
                 },

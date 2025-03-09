@@ -1,14 +1,14 @@
-import Constants from "expo-constants";
-import { StyleSheet, I18nManager } from "react-native";
+import Constants from 'expo-constants';
+import { StyleSheet, I18nManager } from 'react-native';
 
-export const WHITE = "#FFFFFF";
-export const GRAY = "#757E90";
-export const DARK_GRAY = "#363636";
-export const BLACK = "#000000";
-export const LINK = "#ec407a";
+export const WHITE = '#FFFFFF';
+export const GRAY = '#757E90';
+export const DARK_GRAY = '#363636';
+export const BLACK = '#000000';
+export const LINK = '#ec407a';
 
-export const ONLINE_STATUS = "#46A575";
-export const OFFLINE_STATUS = "#D04949";
+export const ONLINE_STATUS = '#46A575';
+export const OFFLINE_STATUS = '#D04949';
 
 export const LIKE_ACTIONS = WHITE;
 export const DISLIKE_ACTIONS = WHITE;
@@ -19,15 +19,15 @@ export const WIDESCREEN_HORIZONTAL_MAX = 600;
 
 export default StyleSheet.create({
   textInputAlign: {
-    textAlign: I18nManager.isRTL ? "right" : "left",
+    textAlign: I18nManager.isRTL ? 'right' : 'left',
   },
   link: {
     color: LINK,
     flex: 1,
   },
   center: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   radioButton: {
     marginBottom: 12,
@@ -38,27 +38,27 @@ export default StyleSheet.create({
     marginTop: 12,
   },
   marginRight4: {
-    marginRight: 4
+    marginRight: 4,
   },
   marginRight8: {
-    marginRight: 8
+    marginRight: 8,
   },
   marginBottom4: {
-    marginBottom: 4
+    marginBottom: 4,
   },
   marginBottom8: {
-    marginBottom: 18
+    marginBottom: 18,
   },
   marginBottom12: {
-    marginBottom: 12
+    marginBottom: 12,
   },
   padding12: {
-    padding: 12
+    padding: 12,
   },
   // COMPONENT - CARD ITEM
   containerCardItem: {
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
     margin: 4,
     elevation: 1,
     shadowOpacity: 0.05,
@@ -72,14 +72,14 @@ export default StyleSheet.create({
     color: WHITE,
   },
   descriptionCardItem: {
-    textAlign: I18nManager.isRTL ? "right" : "left",
+    textAlign: I18nManager.isRTL ? 'right' : 'left',
     flexShrink: 1,
     opacity: 0.8,
   },
   status: {
     paddingBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   statusText: {
     color: GRAY,
@@ -100,18 +100,18 @@ export default StyleSheet.create({
     marginRight: 4,
   },
   actionsCardItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingBottom: 12,
-    paddingTop: 12
+    paddingTop: 12,
   },
   button: {
     width: 60,
     height: 60,
     borderRadius: 30,
     marginHorizontal: 7,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     elevation: 1,
     shadowOpacity: 0.15,
     shadowRadius: 20,
@@ -124,8 +124,8 @@ export default StyleSheet.create({
     borderRadius: 30,
     backgroundColor: WHITE,
     marginHorizontal: 7,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     elevation: 1,
     shadowOpacity: 0.15,
     shadowRadius: 20,
@@ -148,7 +148,7 @@ export default StyleSheet.create({
   cityText: {
     color: DARK_GRAY,
     fontSize: 13,
-    textAlign: "center",
+    textAlign: 'center',
   },
 
   // COMPONENT - FILTERS
@@ -161,21 +161,20 @@ export default StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 10,
     shadowColor: BLACK,
-    shadowOffset: { height: 0, width: 0 }
-
+    shadowOffset: { height: 0, width: 0 },
   },
   filtersText: {
     color: DARK_GRAY,
     fontSize: 13,
-    textAlign: "center",
+    textAlign: 'center',
   },
 
   // COMPONENT - MESSAGE
   containerMessage: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
     paddingHorizontal: 10,
     // width: width - 100,
   },
@@ -200,24 +199,24 @@ export default StyleSheet.create({
   },
   matchesTextProfileItem: {
     color: WHITE,
-    textAlign: "center",
+    textAlign: 'center',
   },
   name: {
     paddingTop: 25,
     paddingBottom: 5,
     fontSize: 24,
-    textAlign: "center",
+    textAlign: 'center',
   },
   descriptionProfileItem: {
     color: GRAY,
-    textAlign: "center",
+    textAlign: 'center',
     paddingBottom: 20,
     fontSize: 13,
   },
   info: {
     paddingVertical: 8,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   iconProfile: {
     fontSize: 12,
@@ -232,16 +231,16 @@ export default StyleSheet.create({
   // CONTAINER - GENERAL
   bg: {
     flex: 1,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     // width: width,
     // height: height,
   },
   top: {
     paddingTop: 12,
     paddingHorizontal: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: { paddingBottom: 10, fontSize: 22 },
 
@@ -252,13 +251,13 @@ export default StyleSheet.create({
 
   // CONTAINER - MATCHES
   containerMatches: {
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     flex: 1,
   },
 
   // CONTAINER - MESSAGES
   containerMessages: {
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     flex: 1,
     paddingHorizontal: 10,
   },
@@ -272,9 +271,9 @@ export default StyleSheet.create({
     paddingRight: 20,
   },
   actionsProfile: {
-    justifyContent: "center",
-    flexDirection: "row",
-    alignItems: "center",
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   textButton: {
     fontSize: 15,
@@ -284,9 +283,9 @@ export default StyleSheet.create({
 
   // MENU
   tabButtonText: {
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   iconMenu: {
-    alignItems: "center",
+    alignItems: 'center',
   },
 });

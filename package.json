@@ -85,10 +85,13 @@
     "@types/react": "18.3.12",
     "eslint": "8.57.0",
     "eslint-config-expo": "8.0.1",
+    "eslint-config-prettier": "10.1.1",
+    "eslint-plugin-prettier": "5.2.3",
     "expo-module-scripts": "4.0.4",
     "husky": "9.1.7",
     "patch-package": "8.0.0",
     "postinstall-postinstall": "2.1.0",
+    "prettier": "3.5.3",
     "react-native-svg-transformer": "1.5.0",
     "typescript": "5.8.2"
   },

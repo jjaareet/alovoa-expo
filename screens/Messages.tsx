@@ -1,22 +1,18 @@
-import React from "react";
-import {
-  View,
-  useWindowDimensions
-} from "react-native";
-import { Text, MaterialBottomTabScreenProps } from "react-native-paper";
-import { Message } from "../components";
-import { ChatsResource, ConversationDto, RootStackParamList } from "../types";
-import { STATUS_BAR_HEIGHT } from "../assets/styles";
-import ConvoEmpty from "../assets/images/convo-empty.svg";
-import * as Global from "../Global";
-import * as URL from "../URL";
-import * as I18N from "../i18n";
-import VerticalView from "../components/VerticalView";
+import React from 'react';
+import { View, useWindowDimensions } from 'react-native';
+import { Text, MaterialBottomTabScreenProps } from 'react-native-paper';
+import { Message } from '../components';
+import { ChatsResource, ConversationDto, RootStackParamList } from '../types';
+import { STATUS_BAR_HEIGHT } from '../assets/styles';
+import ConvoEmpty from '../assets/images/convo-empty.svg';
+import * as Global from '../Global';
+import * as URL from '../URL';
+import * as I18N from '../i18n';
+import VerticalView from '../components/VerticalView';
 
-type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Chat'>
+type Props = MaterialBottomTabScreenProps<RootStackParamList, 'Chat'>;
 const Messages = ({ navigation }: Props) => {
-
-  const i18n = I18N.getI18n()
+  const i18n = I18N.getI18n();
 
   const [loaded, setLoaded] = React.useState(false);
   const [results, setResults] = React.useState(Array<ConversationDto>);
@@ -42,22 +38,42 @@ const Messages = ({ navigation }: Props) => {
   return (
     <VerticalView onRefresh={load}>
       <View style={{ paddingTop: STATUS_BAR_HEIGHT }}></View>
-      {
-        results.map((item, index) => (
-          <Message key={index}
-            conversation={item}
-          />
-        ))
-      }
-      {results && results.length === 0 && loaded &&
-        <View style={{ height: height, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-          <ConvoEmpty height={svgHeight} width={svgWidth}></ConvoEmpty>
-          <Text style={{ fontSize: 20, paddingHorizontal: 48 }}>{i18n.t('convo-empty.title')}</Text>
-          <Text style={{ marginTop: 24, opacity: 0.6, paddingHorizontal: 48, textAlign: 'center' }}>{i18n.t('convo-empty.subtitle')}</Text>
+      {results.map((item, index) => (
+        <Message
+          key={index}
+          conversation={item}
+        />
+      ))}
+      {results && results.length === 0 && loaded && (
+        <View
+          style={{
+            height: height,
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <ConvoEmpty
+            height={svgHeight}
+            width={svgWidth}
+          ></ConvoEmpty>
+          <Text style={{ fontSize: 20, paddingHorizontal: 48 }}>
+            {i18n.t('convo-empty.title')}
+          </Text>
+          <Text
+            style={{
+              marginTop: 24,
+              opacity: 0.6,
+              paddingHorizontal: 48,
+              textAlign: 'center',
+            }}
+          >
+            {i18n.t('convo-empty.subtitle')}
+          </Text>
         </View>
-      }
+      )}
     </VerticalView>
-  )
+  );
 };
 
 export default Messages;
